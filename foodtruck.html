@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annie Lee's Food Truck | Menu, Schedule & Booking</title>
+  <meta name="description" content="View Annie Lee's Southern Kitchen food truck menu, see the Google Calendar schedule, and book the food truck for your next event." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;background:#0f0f0f;color:#f0ebe6;overflow-x:hidden}img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer;border:none;background:none}input,select,textarea{font:inherit}:root{--orange:#c8321a;--orange-dark:#a02514;--black:#0f0f0f;--black-2:#0a0a0a;--panel:#1a1414;--panel-2:#141010;--text:#f0ebe6;--muted:#a89890;--muted-2:#6e5e58;--border:#2a2020;--shadow-sm:0 2px 8px rgba(0,0,0,.4);--shadow:0 8px 32px rgba(0,0,0,.5);--shadow-lg:0 24px 64px rgba(0,0,0,.6);--radius:16px;--max:1280px;--nav-h:72px}.container{width:min(var(--max),calc(100% - 40px));margin-inline:auto}.kicker{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#e05040}.section{padding:88px 0;background:#0f0f0f}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-weight:800;font-size:.95rem;transition:transform .18s,box-shadow .18s,background .18s,border-color .18s;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}.btn:hover{transform:translateY(-2px)}.btn-orange{background:var(--orange);color:#fff;box-shadow:0 4px 16px rgba(200,50,26,.4)}.btn-orange:hover{background:var(--orange-dark);box-shadow:0 8px 24px rgba(200,50,26,.55)}.btn-dark{background:#1e1e1e;color:#f0ebe6;box-shadow:0 4px 16px rgba(0,0,0,.4);border:1px solid #2e2e2e}.btn-dark:hover{background:#2a2a2a;box-shadow:0 8px 24px rgba(0,0,0,.5)}.btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}.btn-outline-white:hover{background:rgba(255,255,255,.12);border-color:#fff}.btn-lg{padding:18px 36px;font-size:1.05rem}
+    .site-nav{position:sticky;top:0;z-index:100;background:#0a0a0a;height:var(--nav-h);display:flex;align-items:center;transition:box-shadow .3s}.site-nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.7);border-bottom:1px solid #2a1a16}.nav-inner{width:min(var(--max),calc(100% - 40px));margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:32px}.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}.nav-logo img{height:42px;width:auto}.nav-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;letter-spacing:.04em;text-transform:uppercase;color:#fff;line-height:1.1}.nav-links{display:flex;align-items:center;gap:4px;list-style:none}.nav-links a{color:rgba(240,235,230,.65);font-size:.9rem;font-weight:600;padding:8px 14px;border-radius:8px;transition:color .18s,background .18s;letter-spacing:.02em;text-transform:uppercase}.nav-links a:hover{color:#f0ebe6;background:rgba(200,50,26,.15)}.nav-links a.active{color:#e05040}.nav-cta{display:flex;align-items:center;gap:12px;flex-shrink:0}.nav-phone{color:rgba(255,255,255,.7);font-size:.85rem;font-weight:600}.nav-phone:hover{color:#fff}.nav-hamburger{display:none;flex-direction:column;gap:5px;padding:8px}.nav-hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px}.mobile-nav{display:none;position:fixed;inset:0;z-index:200;background:#0a0a0a;flex-direction:column;padding:24px}.mobile-nav.open{display:flex}.mobile-nav-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}.mobile-nav-close{color:#fff;font-size:1.5rem;cursor:pointer;padding:8px}.mobile-nav-links{list-style:none;display:flex;flex-direction:column;gap:8px}.mobile-nav-links a{display:block;color:#fff;font-size:1.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}.mobile-nav-bottom{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+    .truck-hero{background:#0a0a0a;min-height:calc(100vh - var(--nav-h));display:grid;grid-template-columns:.95fr 1.05fr;align-items:stretch;overflow:hidden;position:relative;border-bottom:1px solid #1a1414}.truck-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 28% 50%,rgba(200,50,26,.2),transparent 62%);pointer-events:none}.hero-copy{padding:80px 64px 80px 80px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center}.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(200,50,26,.18);border:1px solid rgba(200,50,26,.4);color:#e05040;font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:28px;width:fit-content}.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:#e05040;box-shadow:0 0 18px rgba(224,80,64,.9)}.truck-hero h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(3.2rem,6vw,5.8rem);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:#fff;margin-bottom:24px}.truck-hero h1 em{font-style:normal;color:#e05040}.hero-sub{color:rgba(255,255,255,.72);font-size:1.08rem;line-height:1.7;max-width:44ch;margin-bottom:34px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px}.hero-image{position:relative;height:100%;min-height:560px;overflow:hidden}.hero-image img{width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.02)}.hero-image::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0a 0%,rgba(10,10,10,.62) 18%,transparent 46%)}.hero-badge{position:absolute;right:40px;bottom:40px;z-index:2;background:var(--orange);color:#fff;border-radius:16px;padding:18px 22px;box-shadow:var(--shadow-lg);transform:rotate(-3deg);text-align:center}.hero-badge strong{display:block;font-family:'Barlow Condensed',sans-serif;font-size:2rem;line-height:1;text-transform:uppercase}.hero-badge span{display:block;margin-top:4px;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.85)}
+    .section-header{text-align:center;margin-bottom:42px}.section-header h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.4rem,4vw,3.5rem);text-transform:uppercase;letter-spacing:-.02em;line-height:.95;margin:10px 0 12px;color:#f0ebe6}.section-header h2::after{content:'';display:block;width:72px;height:4px;background:var(--orange);border-radius:999px;margin:18px auto 0}.section-header p{color:#a89890;font-size:1.02rem;max-width:58ch;line-height:1.65;margin-inline:auto}.foodtruck-menu-section{background:radial-gradient(circle at top right,rgba(200,50,26,.11),transparent 34%),#0f0f0f;border-bottom:1px solid #1a1414}.menu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.menu-card{background:linear-gradient(180deg,#171111 0%,#0b0b0b 100%);border:1px solid #2a2020;border-radius:16px;min-height:320px;box-shadow:var(--shadow-sm);transition:transform .22s,box-shadow .22s,border-color .22s;overflow:hidden;position:relative;display:flex;flex-direction:column}.menu-card:hover{transform:translateY(-6px);border-color:rgba(224,80,64,.42);box-shadow:0 16px 42px rgba(200,50,26,.16)}.menu-img{height:160px;overflow:hidden;background:#0a0a0a}.menu-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}.menu-card:hover .menu-img img{transform:scale(1.05)}.menu-body{padding:22px;display:flex;flex-direction:column;flex:1}.menu-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.55rem;line-height:1;color:#fff;text-transform:uppercase;margin-bottom:10px;letter-spacing:.02em}.menu-card p{color:#a89890;font-size:.92rem;line-height:1.55;margin-bottom:18px;flex:1}.menu-card .price{font-family:'Barlow Condensed',sans-serif;font-size:2.15rem;line-height:1;color:#e05040;font-weight:900;text-transform:uppercase}
+    .calendar-section{background:#0f0f0f;border-bottom:1px solid #1a1414}.calendar-wrap{background:#141010;border:1px solid #2a2020;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);padding:12px}.calendar-wrap iframe{display:block;width:100%;min-height:760px;border:0;border-radius:10px;background:#fff}.booking-section{background:#0a0a0a;padding:88px 0;border-top:1px solid #1a1414}.booking-card{max-width:900px;margin:0 auto;background:radial-gradient(circle at top right,rgba(200,50,26,.18),transparent 34%),#141010;border:1px solid #2a2020;border-radius:var(--radius);padding:44px;box-shadow:var(--shadow)}.booking-card h2{color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem,4vw,3.2rem);text-transform:uppercase;letter-spacing:-.02em;line-height:1;margin-bottom:12px;text-align:center}.booking-card>p{color:#a89890;font-size:1rem;line-height:1.65;text-align:center;max-width:58ch;margin:0 auto 30px}.form-group{margin-bottom:20px}.form-group label{display:block;color:#f0ebe6;font-size:.9rem;font-weight:700;margin-bottom:8px}.form-group input,.form-group select,.form-group textarea{width:100%;background:#1a1414;border:1px solid #2a2020;color:#f0ebe6;padding:13px 14px;border-radius:8px;font-size:.95rem;transition:border-color .18s,box-shadow .18s}.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#e05040;box-shadow:0 0 0 3px rgba(224,80,64,.1)}.form-group textarea{resize:vertical;min-height:112px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.submit-btn{width:100%;padding:16px 28px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-weight:900;font-size:1rem;cursor:pointer;transition:all .18s;margin-top:8px;text-transform:uppercase;letter-spacing:.04em}.submit-btn:hover{background:var(--orange-dark);transform:translateY(-2px)}.form-note{color:#6e5e58;font-size:.85rem;text-align:center;margin-top:14px;line-height:1.5}.form-success{display:none;margin-top:18px;padding:16px;border-radius:10px;background:rgba(200,50,26,.16);border:1px solid rgba(200,50,26,.35);color:#f0ebe6;font-size:.95rem;line-height:1.5;text-align:center}.form-success.show{display:block}
+    footer{background:#0a0a0a;padding:80px 0 40px;border-top:1px solid #1a1414}.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}.footer-brand .nav-logo-text{color:#fff;font-size:1.4rem;margin-bottom:14px;display:block}.footer-brand p{font-size:.875rem;line-height:1.7;color:#a89890;max-width:30ch}.footer-col h4{color:#fff;font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}.footer-col ul a{font-size:.875rem;color:#a89890;transition:color .18s}.footer-col ul a:hover{color:#fff}.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.footer-bottom p{font-size:.8rem;color:#a89890}.footer-social{display:flex;gap:12px;flex-wrap:wrap}.footer-social a{min-width:36px;height:36px;padding-inline:12px;border-radius:999px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:.85rem;transition:background .18s,color .18s}.footer-social a:hover{background:var(--orange);color:#fff}.mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:#0a0a0a;border-top:1px solid #2a1a16;padding:12px 20px;gap:10px}.mobile-bar .btn{flex:1;padding:14px 16px;font-size:.85rem}.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}.reveal.visible{opacity:1;transform:none}
+    @media(max-width:1024px){.truck-hero{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:64px 40px 44px}.hero-image{min-height:360px}.hero-image::after{background:linear-gradient(180deg,#0a0a0a 0%,transparent 32%)}.menu-grid{grid-template-columns:repeat(2,1fr)}.footer-inner{grid-template-columns:1fr 1fr}}@media(max-width:768px){:root{--nav-h:64px}.nav-links,.nav-cta{display:none}.nav-hamburger{display:flex}.mobile-bar{display:flex}body{padding-bottom:72px}.section,.booking-section{padding:64px 0}.container{width:min(var(--max),calc(100% - 28px))}.truck-hero h1{font-size:3rem}.hero-copy{padding:56px 24px 40px}.hero-image{min-height:300px}.hero-badge{right:20px;bottom:20px}.menu-grid{grid-template-columns:1fr}.calendar-wrap{padding:8px}.calendar-wrap iframe{min-height:640px}.booking-card{padding:28px 20px}.form-row{grid-template-columns:1fr;gap:0}.footer-inner{grid-template-columns:1fr;gap:32px}}@media(max-width:480px){.truck-hero h1{font-size:2.55rem}.hero-actions .btn{width:100%}.calendar-wrap iframe{min-height:580px}}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="site-nav" id="site-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Annie Lee's Southern Kitchen logo" onerror="this.style.display='none'" />
+        <span class="nav-logo-text">Annie Lee's<br>Southern Kitchen</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="menu.html">MENU</a></li>
+        <li><a href="foodtruck.html" class="active">FOOD TRUCK</a></li>
+        <li><a href="catering.html">CATERING</a></li>
+        <li><a href="index.html#location">LOCATION</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="tel:+17243850522" class="nav-phone">📞 724-385-0522</a>
+        <a href="menu.html" class="btn btn-orange" style="padding:10px 20px;font-size:.875rem;">Order Now</a>
+      </div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-header">
+      <span class="nav-logo-text" style="color:#fff">Annie Lee's Southern Kitchen</span>
+      <button class="mobile-nav-close" id="nav-close">✕</button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="index.html" onclick="closeMobileNav()">Home</a></li>
+      <li><a href="menu.html" onclick="closeMobileNav()">Menu</a></li>
+      <li><a href="foodtruck.html" onclick="closeMobileNav()">Food Truck</a></li>
+      <li><a href="catering.html" onclick="closeMobileNav()">Catering</a></li>
+      <li><a href="index.html#location" onclick="closeMobileNav()">Location</a></li>
+    </ul>
+    <div class="mobile-nav-bottom">
+      <a href="menu.html" class="btn btn-orange" style="width:100%">Order Now</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="truck-hero">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">🚚 Food Truck</div>
+      <h1>Book The<em> Food Truck</em></h1>
+      <p class="hero-sub">Find us around the Triangle and grab some fresh Southern cuisine. Perfect for events, parties, and gatherings.</p>
+      <div class="hero-actions">
+        <a href="#book" class="btn btn-orange btn-lg">Book The Truck</a>
+        <a href="tel:+17243850522" class="btn btn-outline-white btn-lg">Call to Order</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1555939594-58d7cb561404?w=800&h=600&fit=crop" alt="Food truck" />
+      <div class="hero-badge">
+        <strong>Open</strong>
+        <span>Wed-Sun</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="section calendar-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Food Truck Schedule</h2>
+        <p>See where we'll be next and plan your visit</p>
+      </div>
+      <div class="calendar-wrap">
+        <iframe src="https://calendar.google.com/calendar/embed?src=c_d0e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="section booking-section" id="book">
+    <div class="container">
+      <div class="booking-card">
+        <h2>Book The Food Truck</h2>
+        <p>Tell us about your event and we'll get back to you within 24 hours.</p>
+        
+        <form action="https://formspree.io/f/xzdqnknk" method="POST" id="booking-form">
+          <input type="hidden" name="_subject" value="New Food Truck Booking Request">
+          <input type="hidden" name="_next" value="https://mbayingana777-del.github.io/annie-lee-soithern-kitchen-2/foodtruck.html?booked=true">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Your Name *</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number *</label>
+              <input type="tel" id="phone" name="phone" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="event_type">Event Type *</label>
+              <select id="event_type" name="event_type" required>
+                <option value="">Select an event type</option>
+                <option value="Private Party">Private Party</option>
+                <option value="Corporate Event">Corporate Event</option>
+                <option value="Festival">Festival</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="event_date">Event Date *</label>
+              <input type="date" id="event_date" name="event_date" required>
+            </div>
+            <div class="form-group">
+              <label for="event_time">Event Time *</label>
+              <input type="time" id="event_time" name="event_time" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="guests">Number of Guests *</label>
+              <input type="number" id="guests" name="guests" min="1" required>
+            </div>
+            <div class="form-group">
+              <label for="location">Event Location *</label>
+              <input type="text" id="location" name="location" placeholder="Address or venue name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="budget">Budget Range</label>
+            <select id="budget" name="budget">
+              <option value="">Select a budget range</option>
+              <option value="$500-$1000">$500-$1000</option>
+              <option value="$1000-$2000">$1000-$2000</option>
+              <option value="$2000-$3000">$2000-$3000</option>
+              <option value="$3000+">$3000+</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" name="notes" placeholder="Tell us more about your event..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Send Booking Request</button>
+          <p class="form-note">We'll respond to your booking request within 24 hours</p>
+        </form>
+
+        <div class="form-success" id="form-success">
+          ✅ Thank you! Your booking request has been sent. We'll contact you soon!
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="nav-logo-text">Annie Lee's Southern Kitchen</span>
+          <p>Authentic Southern cuisine served fresh from our food truck. Catering available for events.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="foodtruck.html">Food Truck</a></li>
+            <li><a href="catering.html">Catering</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+17243850522">📞 724-385-0522</a></li>
+            <li><a href="mailto:info@annieleeskitchen.com">📧 Email Us</a></li>
+            <li><a href="index.html#location">📍 Location</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hours</h4>
+          <ul>
+            <li>Wed-Fri: 11am-7pm</li>
+            <li>Sat-Sun: 12pm-7pm</li>
+            <li>Mon-Tue: Closed</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Annie Lee's Southern Kitchen. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">📷</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    const navClose = document.getElementById('nav-close');
+
+    hamburger?.addEventListener('click', () => {
+      mobileNav.classList.add('open');
+    });
+
+    navClose?.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+    });
+
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+    }
+
+    // Sticky nav
+    const siteNav = document.getElementById('site-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        siteNav.classList.add('scrolled');
+      } else {
+        siteNav.classList.remove('scrolled');
+      }
+    });
+
+    // Form submission with localStorage
+    const bookingForm = document.getElementById('booking-form');
+    const formSuccess = document.getElementById('form-success');
+
+    bookingForm?.addEventListener('submit', (e) => {
+      // Save to localStorage before submitting
+      const formData = new FormData(bookingForm);
+      const inquiry = {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        event_type: formData.get('event_type'),
+        event_date: formData.get('event_date'),
+        event_time: formData.get('event_time'),
+        guests: formData.get('guests'),
+        location: formData.get('location'),
+        budget: formData.get('budget'),
+        notes: formData.get('notes'),
+        status: 'new'
+      };
+
+      // Get existing inquiries
+      let inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
+      inquiries.push(inquiry);
+      localStorage.setItem('foodtruck_inquiries', JSON.stringify(inquiries));
+
+      // Show success message
+      formSuccess.classList.add('show');
+      bookingForm.style.display = 'none';
+      
+      // Reset after 3 seconds and allow Formspree to submit
+      setTimeout(() => {
+        bookingForm.submit();
+      }, 1500);
+    });
+
+    // Show success message if redirected with booked=true
+    if (new URLSearchParams(window.location.search).get('booked') === 'true') {
+      formSuccess.classList.add('show');
+      bookingForm.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

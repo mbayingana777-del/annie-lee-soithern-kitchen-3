@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM | Annie Lee's Southern Kitchen</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f0ebe6; min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font: inherit; cursor: pointer; border: none; }
+
+    :root {
+      --red: #c8321a; --red-dark: #a02514; --red-glow: rgba(200,50,26,.18);
+      --bg: #0a0a0a; --bg-2: #111010; --card: #1a1414; --card-2: #141010;
+      --border: #2a2020; --text: #f0ebe6; --muted: #a89890; --muted-2: #6e5e58;
+      --green: #22c55e; --yellow: #f59e0b;
+      --radius: 12px;
+    }
+
+    /* ─── LOGIN GATE ─────────────────────────────────────────────── */
+    #login-gate {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+      background: radial-gradient(ellipse at 50% 40%, rgba(200,50,26,.12) 0%, transparent 70%), #0a0a0a;
+    }
+    .login-card {
+      background: #1a1414; border: 1px solid #3a2020; border-radius: 20px;
+      padding: 48px 40px; width: 100%; max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.7);
+      text-align: center;
+    }
+    .login-logo {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(200,50,26,.15); border: 2px solid rgba(200,50,26,.3);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 2rem;
+    }
+    .login-card h1 {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: 1.8rem; text-transform: uppercase; letter-spacing: -.01em;
+      color: #f0ebe6; margin-bottom: 6px;
+    }
+    .login-card p { color: #a89890; font-size: .875rem; margin-bottom: 32px; }
+    .login-field { display: flex; flex-direction: column; gap: 6px; text-align: left; margin-bottom: 16px; }
+    .login-field label { font-size: .75rem; font-weight: 700; color: #a89890; letter-spacing: .06em; text-transform: uppercase; }
+    .login-field input {
+      background: #0f0f0f; border: 1.5px solid #3a2a28; border-radius: 10px;
+      padding: 14px 16px; color: #f0ebe6; font-size: .95rem; font-family: inherit;
+      outline: none; transition: border-color .18s, box-shadow .18s;
+    }
+    .login-field input:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow); }
+    .login-btn {
+      width: 100%; padding: 15px; background: var(--red); color: #fff;
+      border-radius: 10px; font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 1.1rem; text-transform: uppercase;
+      letter-spacing: .05em; margin-top: 8px;
+      transition: background .18s, transform .1s;
+    }
+    .login-btn:hover { background: var(--red-dark); }
+    .login-btn:active { transform: scale(.98); }
+    .login-error {
+      display: none; background: rgba(200,50,26,.15); border: 1px solid rgba(200,50,26,.3);
+      border-radius: 8px; padding: 10px 14px; color: #e05040; font-size: .85rem;
+      margin-top: 14px; text-align: center;
+    }
+
+    /* ─── DASHBOARD ──────────────────────────────────────────────── */
+    #dashboard { display: none; min-height: 100vh; }
+
+    /* Top nav */
+    .crm-nav {
+      background: #111010; border-bottom: 1px solid #2a1a16;
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .crm-nav-brand {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .crm-nav-brand img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+    .crm-nav-brand span {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: 1.1rem; text-transform: uppercase; color: #f0ebe6;
+    }
+    .crm-nav-brand small { color: #a89890; font-size: .7rem; font-weight: 500; display: block; text-transform: none; letter-spacing: 0; }
+    .crm-nav-right { display: flex; align-items: center; gap: 12px; }
+    .badge-owner {
+      background: rgba(200,50,26,.2); color: #e05040; border: 1px solid rgba(200,50,26,.3);
+      border-radius: 20px; padding: 4px 12px; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .btn-logout {
+      background: #2a1a16; color: #a89890; border: 1px solid #3a2020;
+      border-radius: 8px; padding: 8px 14px; font-size: .8rem; font-weight: 600;
+      transition: background .18s, color .18s;
+    }
+    .btn-logout:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+    /* Main content */
+    .crm-main { padding: 32px 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* Stats row */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+    .stat-label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .stat-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.2rem; color: var(--text); line-height: 1; }
+    .stat-sub { font-size: .75rem; color: var(--muted-2); margin-top: 4px; }
+    .stat-card.highlight .stat-value { color: var(--red); }
+
+    /* Toolbar */
+    .crm-toolbar {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-wrap input {
+      width: 100%; background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 10px 14px 10px 38px;
+      color: var(--text); font-size: .9rem; font-family: inherit; outline: none;
+      transition: border-color .18s;
+    }
+    .search-wrap input:focus { border-color: var(--red); }
+    .search-wrap input::placeholder { color: var(--muted-2); }
+    .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--muted-2); font-size: .9rem; pointer-events: none;
+    }
+    .filter-select {
+      background: var(--card); border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; color: var(--text); font-size: .875rem; font-family: inherit;
+      outline: none; cursor: pointer; min-width: 140px;
+    }
+    .filter-select:focus { border-color: var(--red); }
+    .btn-export {
+      background: rgba(34,197,94,.15); color: #22c55e; border: 1px solid rgba(34,197,94,.3);
+      border-radius: 10px; padding: 10px 18px; font-size: .875rem; font-weight: 700;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap;
+      transition: background .18s;
+    }
+    .btn-export:hover { background: rgba(34,197,94,.25); }
+    .btn-clear-all {
+      background: rgba(200,50,26,.12); color: #e05040; border: 1px solid rgba(200,50,26,.25);
+      border-radius: 10px; padding: 10px 18px; font-size: .875rem; font-weight: 700;
+      white-space: nowrap; transition: background .18s;
+    }
+    .btn-clear-all:hover { background: rgba(200,50,26,.25); }
+
+    /* Table */
+    .table-wrap {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .leads-table { width: 100%; border-collapse: collapse; }
+    .leads-table thead { background: #141010; }
+    .leads-table th {
+      padding: 14px 16px; text-align: left;
+      font-size: .72rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .07em;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; user-select: none; white-space: nowrap;
+    }
+    .leads-table th:hover { color: var(--text); }
+    .leads-table th .sort-icon { margin-left: 4px; opacity: .5; }
+    .leads-table td {
+      padding: 14px 16px; font-size: .875rem; color: var(--text);
+      border-bottom: 1px solid rgba(42,32,32,.5); vertical-align: middle;
+    }
+    .leads-table tr:last-child td { border-bottom: none; }
+    .leads-table tr:hover td { background: rgba(200,50,26,.04); }
+    .lead-name { font-weight: 600; }
+    .lead-email a { color: #a89890; }
+    .lead-email a:hover { color: var(--red); }
+    .lead-phone a { color: #a89890; }
+    .lead-phone a:hover { color: var(--red); }
+    .lead-date { color: var(--muted-2); font-size: .8rem; white-space: nowrap; }
+    .lead-source {
+      display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .source-homepage { background: rgba(200,50,26,.15); color: #e05040; }
+    .source-menu { background: rgba(245,158,11,.15); color: #f59e0b; }
+    .btn-delete {
+      background: none; color: var(--muted-2); border: 1px solid transparent;
+      border-radius: 6px; padding: 5px 10px; font-size: .8rem;
+      transition: all .15s;
+    }
+    .btn-delete:hover { background: rgba(200,50,26,.15); color: #e05040; border-color: rgba(200,50,26,.3); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 64px 24px; color: var(--muted);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 16px; opacity: .4; }
+    .empty-state h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.4rem; text-transform: uppercase; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: .875rem; max-width: 36ch; margin: 0 auto; }
+
+    /* Footer note */
+    .crm-footer { margin-top: 24px; text-align: center; color: var(--muted-2); font-size: .78rem; padding-bottom: 40px; }
+
+    /* Add lead modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: #1a1414; border: 1px solid #3a2020; border-radius: 16px;
+      padding: 36px; width: 100%; max-width: 460px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.7);
+    }
+    .modal-card h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; margin-bottom: 20px; }
+    .modal-form { display: flex; flex-direction: column; gap: 14px; }
+    .modal-field { display: flex; flex-direction: column; gap: 6px; }
+    .modal-field label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .modal-field input, .modal-field select {
+      background: #0f0f0f; border: 1.5px solid #3a2a28; border-radius: 8px;
+      padding: 12px 14px; color: var(--text); font-size: .9rem; font-family: inherit; outline: none;
+      transition: border-color .18s;
+    }
+    .modal-field input:focus, .modal-field select:focus { border-color: var(--red); }
+    .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-save { flex: 1; background: var(--red); color: #fff; border-radius: 8px; padding: 13px; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: .05em; transition: background .18s; }
+    .btn-save:hover { background: var(--red-dark); }
+    .btn-cancel { background: #2a1a16; color: var(--muted); border: 1px solid var(--border); border-radius: 8px; padding: 13px 20px; font-size: .875rem; font-weight: 600; transition: background .18s; }
+    .btn-cancel:hover { background: #3a2020; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .crm-main { padding: 20px 16px; }
+      .leads-table th:nth-child(4), .leads-table td:nth-child(4) { display: none; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .leads-table th:nth-child(5), .leads-table td:nth-child(5) { display: none; }
+      .login-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── LOGIN GATE ──────────────────────────────────────────────── -->
+  <div id="login-gate">
+    <div class="login-card">
+      <div class="login-logo">🔥</div>
+      <h1>Owner Access</h1>
+      <p>Annie Lee's Southern Kitchen &mdash; CRM Dashboard.<br>Enter your password to continue.</p>
+      <form onsubmit="handleLogin(event)">
+        <div class="login-field">
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" placeholder="Enter owner password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="login-btn">Unlock Dashboard 🔓</button>
+        <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── DASHBOARD ──────────────────────────────────────────────── -->
+  <div id="dashboard">
+
+    <!-- Nav -->
+    <nav class="crm-nav">
+      <div class="crm-nav-brand">
+        <img src="assets/logo.png" alt="Annie Lee's Logo" onerror="this.style.display='none'" />
+        <div>
+          <span>Annie Lee's Kitchen</span>
+          <small>CRM Dashboard</small>
+        </div>
+      </div>
+      <div class="crm-nav-right">
+        <span class="badge-owner">&#x1F512; Owner</span>
+        <button class="btn-logout" onclick="logout()">Log Out</button>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="crm-main">
+
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card highlight">
+          <div class="stat-label">Total Leads</div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">With Email</div>
+          <div class="stat-value" id="stat-email">0</div>
+          <div class="stat-sub">Can receive promos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">With Phone</div>
+          <div class="stat-value" id="stat-phone">0</div>
+          <div class="stat-sub">Can receive texts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="stat-month">0</div>
+          <div class="stat-sub" id="stat-month-label">New signups</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="crm-toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" id="search-input" placeholder="Search by name, email, or phone…" oninput="renderTable()" />
+        </div>
+        <select class="filter-select" id="filter-source" onchange="renderTable()">
+          <option value="">All Sources</option>
+          <option value="Homepage">Homepage</option>
+          <option value="Menu">Menu</option>
+          <option value="Manual">Manual</option>
+        </select>
+        <button class="btn-export" onclick="exportCSV()">&#x2B07; Export CSV</button>
+        <button class="btn-clear-all" onclick="clearAllLeads()">&#x1F5D1; Clear All</button>
+        <button class="btn-save" style="padding:10px 18px;font-size:.875rem;border-radius:10px;" onclick="openAddModal()">+ Add Lead</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table class="leads-table" id="leads-table">
+          <thead>
+            <tr>
+              <th onclick="sortBy('name')">Name <span class="sort-icon">&#x25B4;</span></th>
+              <th onclick="sortBy('email')">Email <span class="sort-icon">&#x25B4;</span></th>
+              <th onclick="sortBy('phone')">Phone <span class="sort-icon">&#x25B4;</span></th>
+              <th onclick="sortBy('source')">Source <span class="sort-icon">&#x25B4;</span></th>
+              <th onclick="sortBy('date')">Date <span class="sort-icon">&#x25B4;</span></th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state" style="display:none;">
+          <div class="icon">📋</div>
+          <h3>No leads yet</h3>
+          <p>Customer signups from the homepage and menu page will appear here automatically.</p>
+        </div>
+      </div>
+
+      <div class="crm-footer">
+        All data is stored locally in this browser. Export to CSV regularly to back up your leads.
+        &nbsp;&middot;&nbsp; Annie Lee's Southern Kitchen CRM &copy; 2026
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── ADD LEAD MODAL ─────────────────────────────────────────── -->
+  <div class="modal-overlay" id="add-modal">
+    <div class="modal-card">
+      <h2>Add New Lead</h2>
+      <form class="modal-form" onsubmit="saveNewLead(event)">
+        <div class="modal-field">
+          <label>Name</label>
+          <input type="text" id="add-name" placeholder="Customer name" required />
+        </div>
+        <div class="modal-field">
+          <label>Email</label>
+          <input type="email" id="add-email" placeholder="email@example.com" required />
+        </div>
+        <div class="modal-field">
+          <label>Phone <span style="color:#6e5e58;font-weight:400;text-transform:none">(optional)</span></label>
+          <input type="tel" id="add-phone" placeholder="(724) 000-0000" />
+        </div>
+        <div class="modal-field">
+          <label>Source</label>
+          <select id="add-source">
+            <option value="Manual">Manual Entry</option>
+            <option value="Homepage">Homepage</option>
+            <option value="Menu">Menu</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Notes <span style="color:#6e5e58;font-weight:400;text-transform:none">(optional)</span></label>
+          <input type="text" id="add-notes" placeholder="Any notes about this customer…" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+          <button type="submit" class="btn-save">Save Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ─── CONFIG ────────────────────────────────────────────────────
+    // Change this password to something only you know
+    const OWNER_PASSWORD = 'AnnieLee2026!';
+    const LEADS_KEY = 'al_leads';
+
+    // ─── AUTH ──────────────────────────────────────────────────────
+    function handleLogin(e) {
+      e.preventDefault();
+      const pass = document.getElementById('login-pass').value;
+      if (pass === OWNER_PASSWORD) {
+        sessionStorage.setItem('crm_auth', '1');
+        document.getElementById('login-gate').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        init();
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-pass').focus();
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('crm_auth');
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('login-gate').style.display = 'flex';
+      document.getElementById('login-pass').value = '';
+    }
+
+    // Check if already authenticated this session
+    if (sessionStorage.getItem('crm_auth') === '1') {
+      document.getElementById('login-gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+    }
+
+    // ─── DATA ──────────────────────────────────────────────────────
+    function getLeads() {
+      return JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
+    }
+    function saveLeads(leads) {
+      localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+    }
+
+    // ─── SUPABASE LEADS READER ────────────────────────────────────────
+    async function loadSupabaseLeads() {
+      if (!window.supabaseClient) return [];
+
+      const { data, error } = await window.supabaseClient
+        .from('food_truck_bookings')
+        .select('customer_name, name, phone, email, event_date, event_type, guest_count, event_address, budget, special_notes, message, status, created_at').order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('SUPABASE CRM LOAD ERROR:', error);
+        return [];
+      }
+
+      const supabaseLeads = (data || []).map(lead => ({
+        name: lead.customer_name || lead.name || '',
+        email: lead.email || '',
+        phone: lead.phone || '',
+        source: lead.event_type || 'Website',
+        notes: lead.special_notes || lead.message || '',
+        date: lead.event_date || lead.created_at || new Date().toISOString()
+      }));
+
+      if (supabaseLeads.length) {
+        const localLeads = getLeads();
+        const merged = [...supabaseLeads, ...localLeads];
+        const seen = new Set();
+        const unique = merged.filter(lead => {
+          const key = `${lead.date}|${lead.email}|${lead.phone}|${lead.name}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        saveLeads(unique);
+        renderTable();
+      }
+
+      return supabaseLeads;
+    }
+
+    window.loadSupabaseLeads = loadSupabaseLeads;
+
+    // ─── SORT STATE ────────────────────────────────────────────────
+    let sortField = 'date', sortDir = -1;
+
+    function sortBy(field) {
+      if (sortField === field) sortDir *= -1;
+      else { sortField = field; sortDir = -1; }
+      renderTable();
+    }
+
+    // ─── STATS ─────────────────────────────────────────────────────
+    function updateStats(leads) {
+      document.getElementById('stat-total').textContent = leads.length;
+      document.getElementById('stat-email').textContent = leads.filter(l => l.email).length;
+      document.getElementById('stat-phone').textContent = leads.filter(l => l.phone).length;
+      const now = new Date();
+      const thisMonth = leads.filter(l => {
+        const d = new Date(l.date);
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      }).length;
+      document.getElementById('stat-month').textContent = thisMonth;
+      const monthName = now.toLocaleString('default', { month: 'long' });
+      document.getElementById('stat-month-label').textContent = monthName + ' signups';
+    }
+
+    // ─── RENDER TABLE ──────────────────────────────────────────────
+    function renderTable() {
+      let leads = getLeads();
+      const query = (document.getElementById('search-input')?.value || '').toLowerCase();
+      const sourceFilter = document.getElementById('filter-source')?.value || '';
+
+      // Filter
+      if (query) {
+        leads = leads.filter(l =>
+          (l.name || '').toLowerCase().includes(query) ||
+          (l.email || '').toLowerCase().includes(query) ||
+          (l.phone || '').toLowerCase().includes(query)
+        );
+      }
+      if (sourceFilter) {
+        leads = leads.filter(l => (l.source || 'Homepage') === sourceFilter);
+      }
+
+      // Sort
+      leads.sort((a, b) => {
+        let av = (a[sortField] || '').toString().toLowerCase();
+        let bv = (b[sortField] || '').toString().toLowerCase();
+        if (sortField === 'date') { av = new Date(a.date || 0); bv = new Date(b.date || 0); }
+        if (av < bv) return -1 * sortDir;
+        if (av > bv) return 1 * sortDir;
+        return 0;
+      });
+
+      updateStats(getLeads()); // stats always use full dataset
+
+      const tbody = document.getElementById('leads-tbody');
+      const empty = document.getElementById('empty-state');
+
+      if (leads.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      tbody.innerHTML = leads.map((lead, idx) => {
+        const source = lead.source || 'Homepage';
+        const sourceClass = source === 'Menu' ? 'source-menu' : 'source-homepage';
+        const date = lead.date ? new Date(lead.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+        const safeId = encodeURIComponent(lead.date + lead.email);
+        return `<tr>
+          <td class="lead-name">${escHtml(lead.name || '—')}</td>
+          <td class="lead-email">${lead.email ? `<a href="mailto:${escHtml(lead.email)}">${escHtml(lead.email)}</a>` : '<span style="color:#6e5e58">—</span>'}</td>
+          <td class="lead-phone">${lead.phone ? `<a href="tel:${escHtml(lead.phone)}">${escHtml(lead.phone)}</a>` : '<span style="color:#6e5e58">—</span>'}</td>
+          <td><span class="lead-source ${sourceClass}">${escHtml(source)}</span></td>
+          <td class="lead-date">${date}</td>
+          <td><button class="btn-delete" onclick="deleteLead('${safeId}')">Remove</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ─── DELETE ────────────────────────────────────────────────────
+    function deleteLead(safeId) {
+      if (!confirm('Remove this lead?')) return;
+      const id = decodeURIComponent(safeId);
+      let leads = getLeads();
+      leads = leads.filter(l => (l.date + l.email) !== id);
+      saveLeads(leads);
+      renderTable();
+    }
+
+    function clearAllLeads() {
+      if (!confirm('Delete ALL leads? This cannot be undone.')) return;
+      saveLeads([]);
+      renderTable();
+    }
+
+    // ─── ADD LEAD ──────────────────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('add-modal').classList.add('open');
+    }
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('open');
+      document.getElementById('add-name').value = '';
+      document.getElementById('add-email').value = '';
+      document.getElementById('add-phone').value = '';
+      document.getElementById('add-notes').value = '';
+    }
+    function saveNewLead(e) {
+      e.preventDefault();
+      const leads = getLeads();
+      leads.unshift({
+        name: document.getElementById('add-name').value.trim(),
+        email: document.getElementById('add-email').value.trim(),
+        phone: document.getElementById('add-phone').value.trim(),
+        source: document.getElementById('add-source').value,
+        notes: document.getElementById('add-notes').value.trim(),
+        date: new Date().toISOString()
+      });
+      saveLeads(leads);
+      closeAddModal();
+      renderTable();
+    }
+
+    // ─── EXPORT CSV ────────────────────────────────────────────────
+    function exportCSV() {
+      const leads = getLeads();
+      if (leads.length === 0) { alert('No leads to export.'); return; }
+      const headers = ['Name', 'Email', 'Phone', 'Source', 'Notes', 'Date'];
+      const rows = leads.map(l => [
+        l.name || '', l.email || '', l.phone || '',
+        l.source || 'Homepage', l.notes || '',
+        l.date ? new Date(l.date).toLocaleString() : ''
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `annie-lees-leads-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ─── INIT ──────────────────────────────────────────────────────
+    function init() {
+      // Seed demo data if empty (remove this block after first real lead comes in)
+      if (getLeads().length === 0) {
+        saveLeads([
+          { name: 'Celeta S.', email: 'celeta@example.com', phone: '(724) 555-0101', source: 'Homepage', notes: 'Loves the wings', date: new Date(Date.now() - 86400000 * 2).toISOString() },
+          { name: 'Gary N.', email: 'gary@example.com', phone: '', source: 'Menu', notes: '', date: new Date(Date.now() - 86400000 * 5).toISOString() },
+          { name: 'Kelsey O.', email: 'kelsey@example.com', phone: '(724) 555-0202', source: 'Homepage', notes: 'Interested in family deal', date: new Date().toISOString() }
+        ]);
+      }
+      renderTable();
+setTimeout(() => {
+  if (window.loadSupabaseLeads) {
+    window.loadSupabaseLeads();
+  }
+}, 500);
+    }
+
+    // Auto-init if already logged in
+    if (sessionStorage.getItem('crm_auth') === '1') init();
+
+    // Close modal on overlay click
+    document.getElementById('add-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="lead-capture.js"></script>
+</body>
+</html>

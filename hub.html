@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annie Lee's Admin Hub | Bookings & Inquiries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;font-size:16px}body{font-family:'Inter',ui-sans-serif,system-ui,sans-serif;background:#0f0f0f;color:#f0ebe6;overflow-x:hidden}img{max-width:100%;display:block}a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer;border:none;background:none}input,select,textarea{font:inherit}:root{--orange:#c8321a;--orange-dark:#a02514;--black:#0f0f0f;--black-2:#0a0a0a;--panel:#1a1414;--panel-2:#141010;--text:#f0ebe6;--muted:#a89890;--muted-2:#6e5e58;--border:#2a2020;--shadow-sm:0 2px 8px rgba(0,0,0,.4);--shadow:0 8px 32px rgba(0,0,0,.5);--shadow-lg:0 24px 64px rgba(0,0,0,.6);--radius:16px;--max:1280px}.container{width:min(var(--max),calc(100% - 40px));margin-inline:auto}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:8px;font-weight:700;font-size:.85rem;transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;cursor:pointer}.btn-orange{background:var(--orange);color:#fff}.btn-orange:hover{background:var(--orange-dark)}.btn-danger{background:#8b3a3a;color:#fff}.btn-danger:hover{background:#a04545}.btn-success{background:#2d6a2d;color:#fff}.btn-success:hover{background:#3a8a3a}.btn-small{padding:6px 12px;font-size:.75rem}
+    .hub-container{display:grid;grid-template-columns:280px 1fr;min-height:100vh;gap:0}.sidebar{background:#0a0a0a;border-right:1px solid #2a2020;padding:24px;position:sticky;top:0;height:100vh;overflow-y:auto}.sidebar-header{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:900;text-transform:uppercase;margin-bottom:32px;color:#fff}.sidebar-nav{display:flex;flex-direction:column;gap:8px}.nav-item{padding:12px 14px;border-radius:8px;color:#a89890;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .18s,color .18s;text-transform:uppercase;letter-spacing:.02em}.nav-item:hover{background:rgba(200,50,26,.15);color:#f0ebe6}.nav-item.active{background:rgba(200,50,26,.25);color:#e05040}.nav-badge{display:inline-block;background:var(--orange);color:#fff;border-radius:999px;padding:2px 8px;font-size:.7rem;font-weight:800;margin-left:auto}.main-content{padding:40px;background:#0f0f0f;overflow-y:auto}.content-header{margin-bottom:32px}.content-header h1{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;text-transform:uppercase;letter-spacing:-.02em;color:#fff;margin-bottom:8px}.content-header p{color:#a89890;font-size:.95rem}.tab-content{display:none}.tab-content.active{display:block}.inquiries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;margin-bottom:40px}.inquiry-card{background:#141010;border:1px solid #2a2020;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);transition:border-color .18s,box-shadow .18s}.inquiry-card:hover{border-color:rgba(224,80,64,.42);box-shadow:0 8px 24px rgba(200,50,26,.12)}.inquiry-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #2a2020}.inquiry-name{font-weight:700;color:#fff;font-size:1.05rem}.inquiry-status{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:800;text-transform:uppercase}.status-new{background:rgba(200,50,26,.25);color:#e05040}.status-handled{background:rgba(100,100,100,.25);color:#a89890}.inquiry-detail{display:flex;justify-content:space-between;margin-bottom:10px;font-size:.9rem}.inquiry-detail-label{color:#a89890;font-weight:600}.inquiry-detail-value{color:#f0ebe6}.inquiry-notes{background:#0a0a0a;padding:12px;border-radius:6px;margin:12px 0;font-size:.85rem;color:#a89890;line-height:1.5;max-height:80px;overflow-y:auto}.inquiry-actions{display:flex;gap:8px;margin-top:14px}.inquiry-actions button{flex:1}.empty-state{text-align:center;padding:60px 40px;color:#a89890}.empty-state-icon{font-size:3rem;margin-bottom:16px}.empty-state h3{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;color:#f0ebe6;margin-bottom:8px}.empty-state p{font-size:.95rem;line-height:1.5}
+    @media(max-width:768px){.hub-container{grid-template-columns:1fr}.sidebar{position:fixed;left:-280px;top:0;height:100vh;z-index:100;transition:left .3s;width:280px}.sidebar.open{left:0}.main-content{padding:24px}.inquiries-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="hub-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">📊 Hub</div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="switchTab('bookings')">
+          Bookings <span class="nav-badge" id="booking-count">0</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings')">⚙️ Settings</div>
+        <div class="nav-item" onclick="goHome()">← Back to Site</div>
+      </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- BOOKINGS TAB -->
+      <div id="bookings" class="tab-content active">
+        <div class="content-header">
+          <h1>Food Truck Bookings</h1>
+          <p>Manage all booking inquiries from customers</p>
+        </div>
+
+        <!-- OPEN INQUIRIES -->
+        <div style="margin-bottom:40px">
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:900;text-transform:uppercase;margin-bottom:20px;color:#fff">Open Inquiries</h2>
+          <div class="inquiries-grid" id="open-inquiries">
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <h3>No new inquiries</h3>
+              <p>Check back after your next booking form submission.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- HANDLED INQUIRIES (COLLAPSED) -->
+        <div style="margin-bottom:40px">
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:900;text-transform:uppercase;margin-bottom:20px;color:#fff;cursor:pointer;display:flex;align-items:center;gap:8px" onclick="toggleHandled()">
+            <span id="handled-toggle">▶</span> Handled Inquiries (<span id="handled-count">0</span>)
+          </h2>
+          <div class="inquiries-grid" id="handled-inquiries" style="display:none">
+            <div class="empty-state">
+              <div class="empty-state-icon">✅</div>
+              <h3>No handled inquiries yet</h3>
+              <p>Inquiries you close will appear here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div id="settings" class="tab-content">
+        <div class="content-header">
+          <h1>Settings</h1>
+          <p>Manage your hub preferences</p>
+        </div>
+
+        <div style="background:#141010;border:1px solid #2a2020;border-radius:var(--radius);padding:24px;max-width:500px">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;text-transform:uppercase;margin-bottom:16px;color:#fff">Data Management</h3>
+          
+          <button class="btn btn-danger" style="width:100%;margin-bottom:12px" onclick="clearAllData()">
+            🗑 Clear All Data
+          </button>
+          <p style="font-size:.85rem;color:#a89890;line-height:1.5">
+            This will delete all stored inquiries from your browser. This action cannot be undone.
+          </p>
+
+          <hr style="border:none;border-top:1px solid #2a2020;margin:24px 0">
+
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:900;text-transform:uppercase;margin-bottom:16px;color:#fff">Export Data</h3>
+          
+          <button class="btn btn-orange" style="width:100%" onclick="exportData()">
+            📥 Download as JSON
+          </button>
+          <p style="font-size:.85rem;color:#a89890;line-height:1.5;margin-top:12px">
+            Export all inquiries as a JSON file for backup or analysis.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.closest('.nav-item').classList.add('active');
+    }
+
+    // Toggle handled inquiries
+    function toggleHandled() {
+      const handled = document.getElementById('handled-inquiries');
+      const toggle = document.getElementById('handled-toggle');
+      if (handled.style.display === 'none') {
+        handled.style.display = 'grid';
+        toggle.textContent = '▼';
+      } else {
+        handled.style.display = 'none';
+        toggle.textContent = '▶';
+      }
+    }
+
+    // Load and display inquiries
+    function loadInquiries() {
+      const inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
+      const openContainer = document.getElementById('open-inquiries');
+      const handledContainer = document.getElementById('handled-inquiries');
+      
+      const openInquiries = inquiries.filter(i => i.status === 'new');
+      const handledInquiries = inquiries.filter(i => i.status === 'handled');
+
+      // Update badge
+      document.getElementById('booking-count').textContent = openInquiries.length;
+      document.getElementById('handled-count').textContent = handledInquiries.length;
+
+      // Render open inquiries
+      if (openInquiries.length === 0) {
+        openContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <h3>No new inquiries</h3>
+            <p>Check back after your next booking form submission.</p>
+          </div>
+        `;
+      } else {
+        openContainer.innerHTML = openInquiries.map(inquiry => createInquiryCard(inquiry, true)).join('');
+      }
+
+      // Render handled inquiries
+      if (handledInquiries.length === 0) {
+        handledContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">✅</div>
+            <h3>No handled inquiries yet</h3>
+            <p>Inquiries you close will appear here.</p>
+          </div>
+        `;
+      } else {
+        handledContainer.innerHTML = handledInquiries.map(inquiry => createInquiryCard(inquiry, false)).join('');
+      }
+    }
+
+    // Create inquiry card HTML
+    function createInquiryCard(inquiry, isOpen) {
+      const date = new Date(inquiry.event_date).toLocaleDateString();
+      const time = inquiry.event_time || 'TBD';
+      
+      return `
+        <div class="inquiry-card">
+          <div class="inquiry-header">
+            <div class="inquiry-name">${inquiry.name}</div>
+            <span class="inquiry-status ${isOpen ? 'status-new' : 'status-handled'}">
+              ${isOpen ? 'New' : 'Handled'}
+            </span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">📞 Phone:</span>
+            <span class="inquiry-detail-value"><a href="tel:${inquiry.phone}">${inquiry.phone}</a></span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">📧 Email:</span>
+            <span class="inquiry-detail-value"><a href="mailto:${inquiry.email}">${inquiry.email}</a></span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">📅 Event Type:</span>
+            <span class="inquiry-detail-value">${inquiry.event_type}</span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">📆 Date & Time:</span>
+            <span class="inquiry-detail-value">${date} at ${time}</span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">👥 Guests:</span>
+            <span class="inquiry-detail-value">${inquiry.guests}</span>
+          </div>
+          
+          <div class="inquiry-detail">
+            <span class="inquiry-detail-label">📍 Location:</span>
+            <span class="inquiry-detail-value">${inquiry.location}</span>
+          </div>
+          
+          ${inquiry.budget ? `
+            <div class="inquiry-detail">
+              <span class="inquiry-detail-label">💰 Budget:</span>
+              <span class="inquiry-detail-value">${inquiry.budget}</span>
+            </div>
+          ` : ''}
+          
+          ${inquiry.notes ? `
+            <div class="inquiry-detail-label" style="margin-top:12px">Notes:</div>
+            <div class="inquiry-notes">${inquiry.notes}</div>
+          ` : ''}
+          
+          <div class="inquiry-actions">
+            ${isOpen ? `
+              <button class="btn btn-success btn-small" onclick="closeInquiry(${inquiry.id})">✓ Close</button>
+            ` : ''}
+            <button class="btn btn-danger btn-small" onclick="deleteInquiry(${inquiry.id})">🗑 Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Close inquiry (move to handled)
+    function closeInquiry(id) {
+      let inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
+      inquiries = inquiries.map(i => i.id === id ? {...i, status: 'handled'} : i);
+      localStorage.setItem('foodtruck_inquiries', JSON.stringify(inquiries));
+      loadInquiries();
+    }
+
+    // Delete inquiry
+    function deleteInquiry(id) {
+      if (confirm('Are you sure you want to delete this inquiry?')) {
+        let inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
+        inquiries = inquiries.filter(i => i.id !== id);
+        localStorage.setItem('foodtruck_inquiries', JSON.stringify(inquiries));
+        loadInquiries();
+      }
+    }
+
+    // Clear all data
+    function clearAllData() {
+      if (confirm('Are you sure? This will delete ALL inquiries. This cannot be undone.')) {
+        localStorage.removeItem('foodtruck_inquiries');
+        loadInquiries();
+      }
+    }
+
+    // Export data
+    function exportData() {
+      const inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
+      const dataStr = JSON.stringify(inquiries, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `annie-lee-inquiries-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Go back to site
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
+    // Load inquiries on page load
+    loadInquiries();
+
+    // Reload inquiries every 5 seconds to show real-time updates
+    setInterval(loadInquiries, 5000);
+  </script>
+</body>
+</html>

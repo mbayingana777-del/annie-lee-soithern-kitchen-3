@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu | Annie Lee's Southern Kitchen</title>
+  <meta name="description" content="Full menu for Annie Lee's Southern Kitchen — wing dinners, rib plates, fish dinners, sides, and drinks. Order by phone or walk in, Ambridge PA." />
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/favicon-192.png" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Menu | Annie Lee's Southern Kitchen" />
+  <meta property="og:description" content="Wings, ribs, fish dinners, sides, and drinks. Hot, fresh, made to order in Ambridge, PA." />
+  <meta property="og:image" content="assets/wings-6-2-sides.png" />
+  <meta property="og:url" content="https://mbayingana777-del.github.io/annie-lee-southern-kitchen/menu.html" />
+  <meta property="og:type" content="restaurant" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      background: #0f0f0f; color: #f0ebe6; overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    :root {
+      --green: #c8321a; --green-dark: #a02514; --green-light: rgba(200,50,26,.15);
+      --cream: #0f0f0f; --cream-2: #1a1414;
+      --dark: #0a0a0a; --dark-2: #141414;
+      --text: #f0ebe6; --muted: #a89890; --muted-2: #6e5e58;
+      --border: #2a2020; --white: #f5f0ec;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.4);
+      --shadow: 0 8px 32px rgba(0,0,0,.5);
+      --shadow-lg: 0 24px 64px rgba(0,0,0,.6);
+      --radius: 16px; --radius-sm: 10px;
+      --max: 1280px; --nav-h: 72px; --cat-h: 60px;
+    }
+
+    .container { width: min(var(--max), calc(100% - 40px)); margin-inline: auto; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 24px; border-radius: 999px; font-weight: 700; font-size: .9rem;
+      transition: transform .18s, box-shadow .18s, background .18s;
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 16px rgba(200,50,26,.4); }
+    .btn-green:hover { background: var(--green-dark); }
+    .btn-dark { background: #1e1e1e; color: #f0ebe6; border: 1px solid #2e2e2e; }
+    .btn-dark:hover { background: #2a2a2a; }
+    .btn-outline-white { background: transparent; color: #f0ebe6; border: 2px solid rgba(240,235,230,.35); }
+    .btn-outline-white:hover { background: rgba(240,235,230,.08); border-color: #f0ebe6; }
+
+    /* NAV */
+    .site-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #0a0a0a; height: var(--nav-h);
+      display: flex; align-items: center;
+      transition: box-shadow .3s;
+    }
+    .site-nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,.7); border-bottom: 1px solid #2a1a16; }
+    .nav-inner {
+      width: min(var(--max), calc(100% - 40px)); margin-inline: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 32px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-logo img { height: 42px; width: auto; }
+    .nav-logo-text {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: 1.3rem; letter-spacing: .04em; text-transform: uppercase;
+      color: #fff; line-height: 1.1;
+    }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a {
+      color: rgba(240,235,230,.65); font-size: .9rem; font-weight: 600;
+      padding: 8px 14px; border-radius: 8px; transition: color .18s, background .18s;
+      letter-spacing: .02em;
+    }
+    .nav-links a:hover { color: #f0ebe6; background: rgba(200,50,26,.15); }
+    .nav-links a.active { color: #e05040; }
+    .nav-cta { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .nav-phone { color: rgba(255,255,255,.7); font-size: .85rem; font-weight: 600; }
+    .nav-phone:hover { color: #fff; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; padding: 8px; cursor: pointer; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: .3s; }
+
+    /* Mobile nav overlay */
+    .mobile-nav {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: #0a0a0a; flex-direction: column; padding: 24px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .mobile-nav-close { color: #fff; font-size: 1.5rem; cursor: pointer; padding: 8px; }
+    .mobile-nav-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .mobile-nav-links a {
+      display: block; color: #fff; font-size: 1.6rem;
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800;
+      text-transform: uppercase; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .mobile-nav-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+
+    /* MENU BANNER */
+    .menu-banner {
+      position: relative; overflow: hidden;
+      height: 340px; display: flex; align-items: center;
+      border-bottom: 1px solid #2a1a16;
+    }
+    .menu-banner-bg {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .menu-banner-bg img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 60%;
+      display: block;
+    }
+    .menu-banner-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(10,10,10,.92) 0%, rgba(10,10,10,.7) 50%, rgba(10,10,10,.3) 100%);
+    }
+    .menu-banner-inner { position: relative; z-index: 1; }
+    .kicker { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e05040; display: block; margin-bottom: 10px; }
+    .menu-banner h1 {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: clamp(2.8rem, 5vw, 4.5rem); text-transform: uppercase;
+      letter-spacing: -.02em; line-height: .95; color: #fff; margin-bottom: 14px;
+    }
+    .menu-banner p { color: rgba(255,255,255,.65); font-size: 1rem; max-width: 48ch; }
+    @media (max-width: 768px) {
+      .menu-banner { height: 220px; }
+      .menu-banner-bg::after { background: linear-gradient(180deg, rgba(10,10,10,.6) 0%, rgba(10,10,10,.88) 100%); }
+    }
+
+    /* CATEGORY NAV */
+    .cat-nav-wrap {
+      position: sticky; top: var(--nav-h); z-index: 90;
+      background: #141010; border-bottom: 1px solid #2a1a16;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .cat-nav {
+      width: min(var(--max), calc(100% - 40px)); margin-inline: auto;
+      display: flex; gap: 4px; overflow-x: auto; padding: 10px 0;
+      scrollbar-width: none;
+    }
+    .cat-nav::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      flex-shrink: 0; display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 999px; font-size: .875rem; font-weight: 700;
+      color: #a89890; background: transparent; border: 2px solid transparent;
+      transition: all .18s; cursor: pointer; white-space: nowrap;
+    }
+    .cat-btn .icon { font-size: 1.1rem; }
+    .cat-btn:hover { color: #e05040; background: rgba(200,50,26,.15); }
+    .cat-btn.active { color: #e05040; background: rgba(200,50,26,.15); border-color: #c8321a; }
+
+    /* MENU LAYOUT */
+    .menu-layout {
+      display: grid; grid-template-columns: 1fr 380px;
+      gap: 40px; align-items: start; padding: 48px 0 120px;
+    }
+    .menu-content { min-width: 0; }
+
+    /* MENU SECTION */
+    .menu-section { margin-bottom: 64px; scroll-margin-top: calc(var(--nav-h) + var(--cat-h) + 24px); }
+    .menu-section-header { margin-bottom: 28px; padding-bottom: 16px; border-bottom: 2px solid #2a2020; }
+    .menu-section-header h2 {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: 2rem; text-transform: uppercase; letter-spacing: -.02em; line-height: 1; margin-bottom: 6px; color: #f0ebe6;
+    }
+    .menu-section-header p { color: #a89890; font-size: .9rem; }
+
+    /* ITEM CARDS */
+    .items-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .item-card {
+      background: #1a1414; border-radius: var(--radius); overflow: hidden;
+      border: 1px solid #2a2020; box-shadow: var(--shadow-sm);
+      transition: transform .22s, box-shadow .22s; cursor: pointer;
+      display: flex; flex-direction: column;
+    }
+    .item-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(200,50,26,.2); border-color: rgba(200,50,26,.4); }
+    .item-card-img {
+      aspect-ratio: 4/3; overflow: hidden; position: relative; background: #1a1414;
+    }
+    .item-card-img img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center;
+      transition: transform .4s;
+    }
+    .item-card:hover .item-card-img img { transform: scale(1.06); }
+    .item-card-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--green); color: #fff;
+      font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 3px 9px; border-radius: 999px;
+    }
+    .item-card-body { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+    .item-card-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 5px; color: #f0ebe6; }
+    .item-card-body p { font-size: .83rem; color: #a89890; line-height: 1.5; flex: 1; margin-bottom: 14px; }
+    .item-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .item-price { font-weight: 800; font-size: 1.05rem; color: #f0ebe6; }
+    .item-add {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 300;
+      transition: transform .18s, background .18s; border: none; cursor: pointer;
+    }
+    .item-add:hover { background: var(--green-dark); transform: scale(1.12) rotate(90deg); }
+    .item-add.added { background: var(--dark); transform: scale(1.12); }
+
+    /* CART SIDEBAR */
+    .cart-sidebar {
+      position: sticky; top: calc(var(--nav-h) + var(--cat-h) + 24px);
+      background: #0f0c0c; border: 1px solid #2a2020; border-radius: 20px;
+      display: flex; flex-direction: column; max-height: calc(100vh - var(--nav-h) - var(--cat-h) - 48px);
+      box-shadow: 0 12px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(200,50,26,.08);
+      overflow: hidden;
+    }
+    .cart-header {
+      padding: 18px 20px 16px; border-bottom: 1px solid #2a2020;
+      display: flex; justify-content: space-between; align-items: center;
+      background: #141010;
+    }
+    .cart-header h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.35rem; text-transform: uppercase; color: #f0ebe6; letter-spacing: .04em; }
+    .cart-count {
+      background: var(--green); color: #fff; font-size: .78rem; font-weight: 800;
+      min-width: 24px; height: 24px; border-radius: 999px; padding: 0 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cart-items {
+      flex: 1; overflow-y: auto; padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: thin; scrollbar-color: #2a2020 transparent;
+    }
+    .cart-items::-webkit-scrollbar { width: 4px; }
+    .cart-items::-webkit-scrollbar-thumb { background: #2a2020; border-radius: 4px; }
+    .cart-empty { text-align: center; padding: 36px 16px; color: #6e5e58; }
+    .cart-empty .icon { font-size: 2.2rem; margin-bottom: 10px; opacity: .45; }
+    .cart-empty p { font-size: .85rem; line-height: 1.6; }
+
+    .cart-item {
+      display: flex; gap: 10px; align-items: center;
+      background: #1a1414; border-radius: 12px; padding: 10px 12px;
+      border: 1px solid #2a2020;
+    }
+    .cart-item-img { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; background: #0f0c0c; flex-shrink: 0; }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-name { font-size: .85rem; font-weight: 700; color: #f0ebe6; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cart-item-price { font-size: .8rem; color: #a89890; }
+    .cart-item-controls {
+      display: flex; align-items: center; gap: 8px;
+      background: #0f0c0c; border-radius: 999px; padding: 5px 10px;
+      border: 1px solid #2a2020; flex-shrink: 0;
+    }
+    .cart-item-btn {
+      color: #a89890; font-size: 1rem; width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .18s; border-radius: 50%;
+    }
+    .cart-item-btn:hover { color: #fff; background: rgba(200,50,26,.2); }
+    .cart-item-qty { font-size: .85rem; font-weight: 800; width: 18px; text-align: center; color: #f0ebe6; }
+
+    .upsell-section { padding: 14px 18px; border-top: 1px solid #2a2020; background: #0f0c0c; }
+    .upsell-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6e5e58; margin-bottom: 10px; }
+    .upsell-items { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .upsell-items::-webkit-scrollbar { display: none; }
+    .upsell-item {
+      flex-shrink: 0; background: #1a1414; border: 1px solid #2a2020;
+      border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; cursor: pointer;
+      transition: border-color .18s, background .18s;
+    }
+    .upsell-item:hover { border-color: rgba(200,50,26,.5); background: rgba(200,50,26,.06); }
+    .upsell-item img { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; }
+    .upsell-item-info { flex: 1; min-width: 0; }
+    .upsell-item-name { font-size: .75rem; font-weight: 600; color: #f0ebe6; white-space: nowrap; }
+    .upsell-item-price { font-size: .7rem; color: #a89890; }
+    .upsell-add {
+      color: var(--green); font-weight: 900; font-size: 1.1rem; padding: 0 2px;
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; transition: background .18s;
+    }
+    .upsell-item:hover .upsell-add { background: rgba(200,50,26,.15); }
+
+    .cart-footer {
+      padding: 16px 18px 20px; border-top: 1px solid #2a2020;
+      background: #0f0c0c;
+    }
+    .cart-subtotal {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #2a2020;
+    }
+    .cart-subtotal .label { font-size: .85rem; color: #a89890; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+    .cart-subtotal .amount { font-size: 1.5rem; font-weight: 900; color: #f0ebe6; }
+    .cart-note {
+      font-size: .72rem; color: #4e3e38; line-height: 1.5; margin-bottom: 14px;
+      text-align: center; padding: 8px 10px; background: #1a1414; border-radius: 8px;
+      border: 1px solid #2a2020;
+    }
+    .cart-checkout {
+      width: 100%; padding: 15px; border-radius: 999px;
+      background: var(--green); color: #fff; font-weight: 800; font-size: .95rem;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .18s, transform .18s, box-shadow .18s;
+      box-shadow: 0 4px 16px rgba(200,50,26,.35);
+    }
+    .cart-checkout:hover:not(:disabled) { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,50,26,.45); }
+    .cart-checkout:disabled { background: #1e1a1a; color: #4e3e38; cursor: not-allowed; transform: none; box-shadow: none; border: 1px solid #2a2020; }
+    .cart-call {
+      width: 100%; padding: 11px; margin-top: 8px; border-radius: 999px;
+      background: transparent; color: #6e5e58; font-weight: 600; font-size: .8rem;
+      border: 1px solid #2a2020; transition: background .18s, color .18s, border-color .18s;
+    }
+    .cart-call:hover { background: #1a1414; color: #a89890; border-color: #3a3030; }
+
+    /* MOBILE CART OVERLAY & DRAWER */
+    .mobile-cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      z-index: 150; backdrop-filter: blur(6px); opacity: 0;
+      transition: opacity .3s; pointer-events: none;
+      display: block;
+    }
+    .mobile-cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .mobile-cart-drawer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #141010; border-radius: 24px 24px 0 0; z-index: 160;
+      display: flex; flex-direction: column; max-height: 88vh;
+      transform: translateY(100%); transition: transform .35s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -12px 48px rgba(0,0,0,.6);
+    }
+    .mobile-cart-drawer.open { transform: translateY(0); }
+    .drawer-handle {
+      width: 48px; height: 5px; background: #3a2a28; border-radius: 3px;
+      margin: 14px auto 8px; flex-shrink: 0;
+    }
+    .drawer-header {
+      padding: 8px 24px 16px; border-bottom: 1px solid #2a2020;
+      display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+    }
+    .drawer-header h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; }
+    .drawer-close {
+      color: #a89890; font-size: 1.5rem; padding: 8px; line-height: 1;
+      background: #1a1414; border-radius: 50%; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .drawer-items { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .drawer-footer { padding: 20px 24px 36px; border-top: 1px solid #2a2020; background: #1a1414; flex-shrink: 0; }
+    .drawer-upsell { padding: 16px 24px; border-top: 1px solid #2a2020; background: #1a1414; flex-shrink: 0; }
+    .drawer-upsell-title { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #a89890; margin-bottom: 10px; }
+    .drawer-upsell-row { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+    .drawer-upsell-row::-webkit-scrollbar { display: none; }
+    .drawer-upsell-chip {
+      flex-shrink: 0; display: flex; align-items: center; gap: 8px;
+      background: #141010; border: 1px solid #2a2020; border-radius: 999px;
+      padding: 8px 14px; cursor: pointer; transition: border-color .18s;
+      white-space: nowrap;
+    }
+    .drawer-upsell-chip:hover, .drawer-upsell-chip:active { border-color: var(--green); }
+    .drawer-upsell-chip span { font-size: .8rem; font-weight: 600; color: #f0ebe6; }
+    .drawer-upsell-chip .chip-price { color: #a89890; font-size: .75rem; }
+    .drawer-upsell-chip .chip-add { color: var(--green); font-weight: 800; font-size: 1rem; }
+
+    /* MOBILE FLOATING CART BUTTON */
+    .mobile-cart-btn {
+      display: none; position: fixed; bottom: 28px; right: 20px; z-index: 140;
+      background: var(--green); color: #fff;
+      height: 56px; border-radius: 999px;
+      padding: 0 20px 0 16px;
+      box-shadow: 0 8px 28px rgba(200,50,26,.55);
+      align-items: center; justify-content: center; gap: 8px;
+      font-size: 1.1rem; font-weight: 700;
+      transition: transform .2s, box-shadow .2s;
+      white-space: nowrap;
+    }
+    .mobile-cart-btn:active { transform: scale(.96); box-shadow: 0 4px 12px rgba(200,50,26,.4); }
+    .mobile-cart-btn-label { font-size: .9rem; font-weight: 700; }
+    .mobile-cart-badge {
+      background: #fff; color: var(--green);
+      font-size: .75rem; font-weight: 800; min-width: 22px; height: 22px; border-radius: 999px;
+      padding: 0 5px;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .menu-layout { grid-template-columns: 1fr 320px; gap: 24px; }
+    }
+    @media (max-width: 768px) {
+      :root { --nav-h: 64px; }
+      .menu-layout { grid-template-columns: 1fr; padding-bottom: 120px; }
+      .cart-sidebar { display: none !important; }
+      .mobile-cart-btn { display: flex; }
+      .items-grid { grid-template-columns: 1fr; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      /* Larger touch targets on mobile */
+      .item-card { min-height: 0; }
+      .item-add { width: 42px; height: 42px; font-size: 1.5rem; }
+      .item-card-body { padding: 14px 16px 16px; }
+      .item-card-body h3 { font-size: 1.05rem; }
+      .cart-item-btn { width: 28px; height: 28px; font-size: 1.2rem; }
+    }
+    /* SIZE MODAL */
+.size-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.size-modal-overlay.open {
+    display: flex;
+}
+
+.size-modal {
+    background: #141010;
+    border: 1px solid #2a2020;
+    border-radius: 20px;
+    padding: 28px;
+    width: 90%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    animation: modalPop .25s ease;
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.size-modal h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #f0ebe6;
+}
+
+.size-modal p {
+    color: #a89890;
+    margin-bottom: 24px;
+}
+
+.size-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.size-option-btn {
+    background: #1a1414;
+    border: 1px solid #2a2020;
+    border-radius: 14px;
+    padding: 16px;
+    color: #f0ebe6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .2s ease;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.size-option-btn:hover {
+    border-color: var(--green);
+    background: rgba(200,50,26,.1);
+    transform: translateY(-2px);
+}
+
+.size-close {
+    margin-top: 18px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 999px;
+    background: #1a1414;
+    color: #a89890;
+    border: 1px solid #2a2020;
+    cursor: pointer;
+}
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav" id="site-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Annie Lee's Southern Kitchen logo" onerror="this.style.display='none'" />
+        <span class="nav-logo-text">Annie Lee's<br>Southern Kitchen</span>
+      </a>
+    <ul class="nav-links">
+  <li><a href="index.html">HOME</a></li>
+  <li><a href="menu.html" class="active">MENU</a></li>
+  <li><a href="foodtruck.html">FOOD TRUCK</a></li>
+  <li><a href="catering.html">CATERING</a></li>
+  <li><a href="index.html#location">LOCATION</a></li>
+</ul>
+      <div class="nav-cta">
+        <a href="tel:+17243850522" class="nav-phone">📞 724-385-0522</a>
+        <a href="menu.html" class="btn btn-green" style="padding:10px 20px;font-size:.875rem;">Order Now</a>
+      </div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-nav-header">
+      <span class="nav-logo-text" style="color:#fff">Annie Lee's Southern Kitchen</span>
+      <button class="mobile-nav-close" id="nav-close">✕</button>
+    </div>
+   <ul class="mobile-nav-links">
+  <li><a href="index.html" onclick="closeMobileNav()">Home</a></li>
+  <li><a href="menu.html" onclick="closeMobileNav()">Menu</a></li>
+  <li><a href="foodtruck.html" onclick="closeMobileNav()">Food Truck</a></li>
+  <li><a href="catering.html" onclick="closeMobileNav()">Catering</a></li>
+  <li><a href="index.html#location" onclick="closeMobileNav()">Location</a></li>
+</ul>
+    <div class="mobile-nav-bottom">
+      <a href="menu.html" class="btn btn-green btn-lg">Order Now</a>
+      <a href="tel:+17243850522" class="btn btn-outline-white btn-lg">Call 724-385-0522</a>
+    </div>
+  </div>
+  
+  <!-- MENU BANNER -->
+  <div class="menu-banner">
+    <div class="menu-banner-bg">
+      <img src="assets/wings-6-2-sides.png" alt="Annie Lee's Southern Kitchen soul food" onerror="this.src='https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=1400&q=80'" />
+    </div>
+    <div class="container menu-banner-inner">
+      <span class="kicker">The Menu</span>
+      <h1>Soul Food Made Right</h1>
+      <p>Hot, fresh, and made to order. Pick your plate, add your sides, and call it in.</p>
+    </div>
+  </div>
+
+  <!-- CATEGORY NAV -->
+  <div class="cat-nav-wrap">
+    <div class="cat-nav" id="cat-nav">
+      <button class="cat-btn active" onclick="scrollToSection('wings')"><span class="icon">🍗</span> Wings</button>
+      <button class="cat-btn" onclick="scrollToSection('ribs')"><span class="icon">🍖</span> Ribs</button>
+      <button class="cat-btn" onclick="scrollToSection('fish')"><span class="icon">🐟</span> Fish</button>
+      <button class="cat-btn" onclick="scrollToSection('sides')"><span class="icon">🥘</span> Sides</button>
+      <button class="cat-btn" onclick="scrollToSection('drinks')"><span class="icon">🥤</span> Drinks</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="menu-layout">
+      
+      <!-- MENU CONTENT -->
+      <div class="menu-content">
+        
+        <!-- WINGS -->
+        <section class="menu-section" id="wings">
+          <div class="menu-section-header">
+            <h2>🍗 Wing Dinners</h2>
+            <p>Crispy, seasoned whole wings served hot. All dinners include your choice of 2 sides.</p>
+          </div>
+          <div class="items-grid">
+            <div class="item-card" onclick="addToCart('3 Wings w/ 2 Sides', 12, 'assets/wings-12-piece.png', this)">
+              <div class="item-card-img">
+                <img src="assets/wings-12-piece.png" alt="3 Wings with 2 Sides" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>3 Wings w/ 2 Sides</h3>
+                <p>Three crispy whole wings with your choice of two sides.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$12</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" id="item-6_wings" onclick="addToCart('6 Wings w/ 2 Sides', 18, 'assets/wings-6-2-sides.png', this)">
+              <div class="item-card-img">
+                <img src="assets/wings-6-2-sides.png" alt="6 Wings with 2 Sides" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=600&q=80'" />
+                <span class="item-card-badge">Best Seller</span>
+              </div>
+              <div class="item-card-body">
+                <h3>6 Wings w/ 2 Sides</h3>
+                <p>Six crispy whole wings with your choice of two sides.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$18</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="addToCart('10 Wings w/ 2 Sides', 25, 'assets/wings-6-2-sides.png', this)">
+              <div class="item-card-img">
+                <img src="assets/wings-6-2-sides.png" alt="10 Wings with 2 Sides" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>10 Wings w/ 2 Sides</h3>
+                <p>Ten crispy whole wings with your choice of two sides. Perfect for sharing.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$25</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIBS -->
+        <section class="menu-section" id="ribs">
+          <div class="menu-section-header">
+            <h2>🍖 Rib Plates</h2>
+            <p>Slow-smoked, tender ribs that fall off the bone. Served with 2 sides.</p>
+          </div>
+          <div class="items-grid">
+            <div class="item-card" id="item-half_slab" onclick="addToCart('Half Slab w/ 2 Sides', 25, 'assets/ribs-half-slab-2-sides.png', this)">
+              <div class="item-card-img">
+                <img src="assets/ribs-half-slab-2-sides.png" alt="Half Slab Ribs with 2 Sides" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'" />
+                <span class="item-card-badge">Hearty</span>
+              </div>
+              <div class="item-card-body">
+                <h3>Half Slab w/ 2 Sides</h3>
+                <p>Slow-cooked, tender ribs with two sides&mdash;full of flavor and built to fill you up.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$25</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FISH -->
+        <section class="menu-section" id="fish">
+          <div class="menu-section-header">
+            <h2>🐟 Fish Dinners</h2>
+            <p>Golden fried fish served hot with your choice of sides.</p>
+          </div>
+          <div class="items-grid">
+            <div class="item-card" id="item-fish_dinner" onclick="addToCart('Fish Dinner', 16, 'assets/fish-dinner.png', this)">
+              <div class="item-card-img">
+                <img src="assets/fish-dinner.png" alt="Fish Dinner" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&w=600&q=80'" />
+                <span class="item-card-badge">Fan Favorite</span>
+              </div>
+              <div class="item-card-body">
+                <h3>Fish Dinner</h3>
+                <p>Golden fried fish served hot with classic sides&mdash;simple, fresh, and done right.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$16</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="addToCart('Fish Sandwich', 10, 'assets/fish-sandwich.png', this)">
+              <div class="item-card-img">
+                <img src="assets/fish-sandwich.png" alt="Fish Sandwich" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Fish Sandwich</h3>
+                <p>Crispy fried fish on a soft bun&mdash;a quick, satisfying bite.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$10</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIDES -->
+        <section class="menu-section" id="sides">
+          <div class="menu-section-header">
+            <h2>🥘 Sides</h2>
+            <p>Classic Southern sides. Available in small or large.</p>
+          </div>
+          <div class="items-grid">
+            <div class="item-card" id="item-mac_cheese" onclick="openSizeModal('Baked Mac & Cheese', 'assets/mac-cheese-lg.png')">
+              <div class="item-card-img">
+                <img src="assets/mac-cheese-lg.png" alt="Baked Mac and Cheese" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1612871689353-cccf581d667b?auto=format&fit=crop&w=600&q=80'" />
+                <span class="item-card-badge">Add-On King</span>
+              </div>
+              <div class="item-card-body">
+                <h3>Baked Mac &amp; Cheese</h3>
+                <p>Rich, creamy, baked mac &amp; cheese&mdash;the side everyone ends up ordering.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">Sm $4 &middot; Lg $7</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="openSizeModal('Collard Greens', 'assets/collard-greens-sm.png')">
+              <div class="item-card-img">
+                <img src="assets/collard-greens-sm.png" alt="Collard Greens" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Collard Greens</h3>
+                <p>Slow-cooked, seasoned collard greens&mdash;tender, savory, and soul-satisfying.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">Sm $4 &middot; Lg $7</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="openSizeModal('Candied Yams', 'assets/candied-yams-sm.png')">
+              <div class="item-card-img">
+                <img src="assets/candied-yams-sm.png" alt="Candied Yams" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Candied Yams</h3>
+                <p>Sweet, buttery candied yams&mdash;a Southern classic done the right way.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">Sm $4 &middot; Lg $7</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="openSizeModal('Potato Salad', 'assets/potato-salad-sm.png')">
+              <div class="item-card-img">
+                <img src="assets/potato-salad-sm.png" alt="Potato Salad" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Potato Salad</h3>
+                <p>Creamy, homestyle potato salad&mdash;the perfect cool side to any hot plate.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">Sm $4 &middot; Lg $7</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="openSizeModal('Red Beans & Rice', 'assets/red-beans-rice-sm.png')">
+              <div class="item-card-img">
+                <img src="assets/red-beans-rice-sm.png" alt="Red Beans and Rice" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Red Beans &amp; Rice</h3>
+                <p>Hearty red beans and rice&mdash;seasoned right and full of Southern flavor.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">Sm $4 &middot; Lg $7</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="addToCart('Cornbread', 2, 'assets/cornbread.png', this)">
+              <div class="item-card-img">
+                <img src="assets/cornbread.png" alt="Cornbread" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Cornbread</h3>
+                <p>Golden, moist cornbread&mdash;the perfect complement to any plate.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$2</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DRINKS -->
+        <section class="menu-section" id="drinks">
+          <div class="menu-section-header">
+            <h2>🥤 Drinks</h2>
+            <p>Cold drinks to go with your meal.</p>
+          </div>
+          <div class="items-grid">
+            <div class="item-card" onclick="addToCart('Soda Can', 2, 'assets/soda-can.png', this)">
+              <div class="item-card-img">
+                <img src="assets/soda-can.png" alt="Soda Can" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Soda Can</h3>
+                <p>Ice-cold canned soda&mdash;the perfect refresher alongside your meal.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$2</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="item-card" onclick="addToCart('Bottled Water', 2, 'assets/bottled-water.png', this)">
+              <div class="item-card-img">
+                <img src="assets/bottled-water.png" alt="Bottled Water" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=600&q=80'" />
+              </div>
+              <div class="item-card-body">
+                <h3>Bottled Water</h3>
+                <p>Cold bottled water to keep you refreshed.</p>
+                <div class="item-card-footer">
+                  <span class="item-price">$2</span>
+                  <button class="item-add" aria-label="Add to order">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- end menu-content -->
+
+      <!-- CART SIDEBAR (desktop) -->
+      <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+          <h3>Your Order</h3>
+          <div class="cart-count" id="cart-count">0</div>
+        </div>
+        <div class="cart-items" id="cart-items">
+          <div class="cart-empty" id="cart-empty">
+            <div class="icon">🛒</div>
+            <p>Your order is empty.<br>Add items from the menu.</p>
+          </div>
+        </div>
+        <div class="upsell-section">
+          <div class="upsell-title">Add to your order</div>
+          <div class="upsell-items">
+            <div class="upsell-item" onclick="addToCart('Cornbread', 2, 'assets/cornbread.png', null)">
+              <img src="assets/cornbread.png" alt="Cornbread" onerror="this.src='https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80'" />
+              <div class="upsell-item-info">
+                <div class="upsell-item-name">Cornbread</div>
+                <div class="upsell-item-price">$2</div>
+              </div>
+              <button class="upsell-add">+</button>
+            </div>
+            <div class="upsell-item" onclick="addToCart('Soda Can', 2, 'assets/soda-can.png', null)">
+              <img src="assets/soda-can.png" alt="Soda Can" onerror="this.src='https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=100&q=80'" />
+              <div class="upsell-item-info">
+                <div class="upsell-item-name">Soda Can</div>
+                <div class="upsell-item-price">$2</div>
+              </div>
+              <button class="upsell-add">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="cart-footer">
+          <div class="cart-subtotal">
+            <span class="label">Subtotal</span>
+            <span class="amount" id="cart-total">$0.00</span>
+          </div>
+          <p class="cart-note">Online ordering coming soon via Square. For now, please call to place your order.</p>
+          <button class="cart-checkout" id="cart-checkout-btn" onclick="callToOrder()" disabled>
+            📞 Call to Order
+          </button>
+          <button class="cart-call" onclick="window.location='tel:+17243850522'">
+            Or call directly: 724-385-0522
+          </button>
+        </div>
+      </aside>
+
+    </div><!-- end menu-layout -->
+  </div><!-- end container -->
+
+  <!-- MOBILE CART OVERLAY -->
+  <div class="mobile-cart-overlay" id="mobile-cart-overlay" onclick="closeMobileCart()"></div>
+
+  <!-- MOBILE CART DRAWER -->
+  <div class="mobile-cart-drawer" id="mobile-cart-drawer">
+    <div class="drawer-handle"></div>
+    <div class="drawer-header">
+      <h3>Your Order (<span id="drawer-count">0</span>)</h3>
+      <button class="drawer-close" onclick="closeMobileCart()">✕</button>
+    </div>
+    <div class="drawer-items" id="drawer-items">
+      <div class="cart-empty">
+        <div class="icon">🛒</div>
+        <p>Your order is empty.<br>Tap any item to add it.</p>
+      </div>
+    </div>
+    <!-- Upsell strip inside drawer -->
+    <div class="drawer-upsell" id="drawer-upsell">
+      <div class="drawer-upsell-title">Add to your order</div>
+      <div class="drawer-upsell-row">
+        <div class="drawer-upsell-chip" onclick="addToCart('Cornbread', 2, 'assets/cornbread.png', null)">
+          <span>Cornbread</span><span class="chip-price">$2</span><span class="chip-add">+</span>
+        </div>
+        <div class="drawer-upsell-chip" onclick="addToCart('Soda Can', 2, 'assets/soda-can.png', null)">
+          <span>Soda Can</span><span class="chip-price">$2</span><span class="chip-add">+</span>
+        </div>
+        <div class="drawer-upsell-chip" onclick="addToCart('Bottled Water', 2, 'assets/bottled-water.png', null)">
+          <span>Water</span><span class="chip-price">$2</span><span class="chip-add">+</span>
+        </div>
+        <div class="drawer-upsell-chip" onclick="addToCart('Baked Mac &amp; Cheese (Lg)', 7, 'assets/mac-cheese-lg.png', null)">
+          <span>Mac &amp; Cheese</span><span class="chip-price">$7</span><span class="chip-add">+</span>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <div class="cart-subtotal" style="margin-bottom:12px;">
+        <span class="label">Subtotal</span>
+        <span class="amount" id="drawer-total">$0.00</span>
+      </div>
+      <p class="cart-note" style="font-size:.75rem;color:#6e5e58;margin-bottom:14px;text-align:center;line-height:1.5;">Online ordering via Square coming soon.<br>Call us to place your order now.</p>
+      <button class="cart-checkout" id="drawer-checkout-btn" onclick="callToOrder()" disabled>
+        📞 Call to Order — 724-385-0522
+      </button>
+    </div>
+  </div>
+
+  <!-- MOBILE FLOATING CART BUTTON -->
+  <button class="mobile-cart-btn" id="mobile-cart-btn" onclick="openMobileCart()">
+    🛒
+    <span class="mobile-cart-btn-label" id="mobile-cart-label">View Order</span>
+    <span class="mobile-cart-badge" id="mobile-badge" style="display:none;">0</span>
+  </button>
+<!-- SIZE SELECT MODAL -->
+<div class="size-modal-overlay" id="size-modal">
+    <div class="size-modal">
+        <h3 id="size-modal-title">Choose Size</h3>
+        <p>Select your portion size</p>
+
+        <div class="size-options">
+            <button class="size-option-btn" id="small-option">
+                <span>Small</span>
+                <span>$4</span>
+            </button>
+
+            <button class="size-option-btn" id="large-option">
+                <span>Large</span>
+                <span>$7</span>
+            </button>
+        </div>
+
+        <button class="size-close" onclick="closeSizeModal()">
+            Cancel
+        </button>
+    </div>
+</div>
+  <script>
+    // ── Mobile nav
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    const navClose = document.getElementById('nav-close');
+    hamburger.addEventListener('click', () => mobileNav.classList.add('open'));
+    navClose.addEventListener('click', () => mobileNav.classList.remove('open'));
+    function closeMobileNav() { mobileNav.classList.remove('open'); }
+
+    // ── Category Nav Scroll Spy
+    const sections = document.querySelectorAll('.menu-section');
+    const navBtns = document.querySelectorAll('.cat-btn');
+    
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 140;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 160;
+        if (window.scrollY >= top) { current = sec.getAttribute('id'); }
+      });
+      navBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(current)) {
+          btn.classList.add('active');
+          // scroll nav horizontally if needed
+          const nav = document.getElementById('cat-nav');
+          const btnLeft = btn.offsetLeft;
+          if (btnLeft < nav.scrollLeft || btnLeft > nav.scrollLeft + nav.clientWidth - 100) {
+            nav.scrollTo({ left: btnLeft - 20, behavior: 'smooth' });
+          }
+        }
+      });
+    }, { passive: true });
+let currentSideItem = null;
+let currentSideImg = null;
+
+function openSizeModal(name, img) {
+    currentSideItem = name;
+    currentSideImg = img;
+
+    document.getElementById('size-modal-title').textContent = name;
+
+    document.getElementById('size-modal').classList.add('open');
+}
+
+function closeSizeModal() {
+    document.getElementById('size-modal').classList.remove('open');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+
+    document.getElementById('small-option').addEventListener('click', () => {
+        addToCart(currentSideItem + ' (Sm)', 4, currentSideImg, null);
+        closeSizeModal();
+    });
+
+    document.getElementById('large-option').addEventListener('click', () => {
+        addToCart(currentSideItem + ' (Lg)', 7, currentSideImg, null);
+        closeSizeModal();
+    });
+
+});
+    // ── Cart Logic
+    let cart = [];
+
+    function addToCart(name, price, img, btnEl) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, img, qty: 1 });
+      }
+      
+      // Button animation
+      if (btnEl) {
+        const addBtn = btnEl.querySelector('.item-add');
+        if (addBtn) {
+          addBtn.classList.add('added');
+          addBtn.innerHTML = '✓';
+          setTimeout(() => {
+            addBtn.classList.remove('added');
+            addBtn.innerHTML = '+';
+          }, 800);
+        }
+      }
+      
+      updateCartUI();
+    }
+
+    function updateQty(name, delta) {
+      const item = cart.find(i => i.name === name);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          cart = cart.filter(i => i.name !== name);
+        }
+        updateCartUI();
+      }
+    }
+
+    function updateCartUI() {
+      const itemsContainer = document.getElementById('cart-items');
+      const drawerItems = document.getElementById('drawer-items');
+      const emptyState = document.getElementById('cart-empty');
+      
+      let totalQty = 0;
+      let totalPrice = 0;
+      let html = '';
+
+      cart.forEach(item => {
+        totalQty += item.qty;
+        totalPrice += item.price * item.qty;
+        const fallbackImg = item.img.includes('wings') ? 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=100&q=80' : 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=100&q=80';
+        
+        html += `
+          <div class="cart-item">
+            <img src="${item.img}" alt="${item.name}" class="cart-item-img" onerror="this.src='${fallbackImg}'" />
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">$${item.price}</div>
+            </div>
+            <div class="cart-item-controls">
+              <button class="cart-item-btn" onclick="updateQty('${item.name}', -1)">-</button>
+              <span class="cart-item-qty">${item.qty}</span>
+              <button class="cart-item-btn" onclick="updateQty('${item.name}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      });
+
+      if (cart.length === 0) {
+        itemsContainer.innerHTML = `
+          <div class="cart-empty" id="cart-empty">
+            <div class="icon">🛒</div>
+            <p>Your order is empty.<br>Add items from the menu.</p>
+          </div>
+        `;
+        drawerItems.innerHTML = itemsContainer.innerHTML;
+      } else {
+        itemsContainer.innerHTML = html;
+        drawerItems.innerHTML = html;
+      }
+
+      // Update counts & totals
+      document.getElementById('cart-count').textContent = totalQty;
+      document.getElementById('drawer-count').textContent = totalQty;
+      document.getElementById('mobile-badge').textContent = totalQty;
+      
+      const formattedTotal = '$' + totalPrice.toFixed(2);
+      document.getElementById('cart-total').textContent = formattedTotal;
+      document.getElementById('drawer-total').textContent = formattedTotal;
+
+      // Toggle checkout buttons
+      const canCheckout = cart.length > 0;
+      document.getElementById('cart-checkout-btn').disabled = !canCheckout;
+      document.getElementById('drawer-checkout-btn').disabled = !canCheckout;
+      
+      // Update mobile cart button label
+      const labelEl = document.getElementById('mobile-cart-label');
+      const badgeEl = document.getElementById('mobile-badge');
+      if (totalQty > 0) {
+        labelEl.textContent = totalQty + ' item' + (totalQty > 1 ? 's' : '') + ' — ' + formattedTotal;
+        badgeEl.style.display = 'none'; // label already shows count
+      } else {
+        labelEl.textContent = 'View Order';
+        badgeEl.style.display = 'none';
+      }
+    }
+
+    function callToOrder() {
+      if (cart.length === 0) return;
+      // Direct phone call — no alert on mobile, just dial
+      window.location.href = 'tel:+17243850522';
+    }
+
+    // ── Mobile Cart Drawer
+    function openMobileCart() {
+      document.getElementById('mobile-cart-overlay').classList.add('open');
+      document.getElementById('mobile-cart-drawer').classList.add('open');
+    }
+    function closeMobileCart() {
+      document.getElementById('mobile-cart-overlay').classList.remove('open');
+      document.getElementById('mobile-cart-drawer').classList.remove('open');
+    }
+
+    // ── Handle URL parameters for "Add to Cart" from homepage
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const addItem = urlParams.get('add');
+      
+      if (addItem) {
+        setTimeout(() => {
+          const itemEl = document.getElementById('item-' + addItem);
+          if (itemEl) {
+            itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Simulate click to add to cart
+            itemEl.click();
+            
+            // Clean up URL without reloading
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        }, 500);
+      }
+    });
+  </script>
+
+  <!-- Lead Capture & CRM Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="lead-capture.js"></script>
+</body>
+</html>
