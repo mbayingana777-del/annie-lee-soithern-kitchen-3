@@ -101,9 +101,7 @@
         <h2>Book The Food Truck</h2>
         <p>Tell us about your event and we'll get back to you within 24 hours.</p>
         
-        <form action="https://formspree.io/f/xzdqnknk" method="POST" id="booking-form">
-          <input type="hidden" name="_subject" value="New Food Truck Booking Request">
-          <input type="hidden" name="_next" value="https://mbayingana777-del.github.io/annie-lee-soithern-kitchen-2/foodtruck.html?booked=true">
+        <form id="booking-form">
           
           <div class="form-row">
             <div class="form-group">
@@ -227,76 +225,142 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Mobile nav toggle
+    // ── Supabase init ──
+    const _supabase = window.supabase.createClient(
+      'https://dcxqorxmezakztyfyfbq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY'
+    );
+
+    // ── Mobile nav ──
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobile-nav');
-    const navClose = document.getElementById('nav-close');
+    const navClose  = document.getElementById('nav-close');
+    hamburger?.addEventListener('click', () => mobileNav.classList.add('open'));
+    navClose?.addEventListener('click',  () => mobileNav.classList.remove('open'));
+    function closeMobileNav() { mobileNav.classList.remove('open'); }
 
-    hamburger?.addEventListener('click', () => {
-      mobileNav.classList.add('open');
-    });
-
-    navClose?.addEventListener('click', () => {
-      mobileNav.classList.remove('open');
-    });
-
-    function closeMobileNav() {
-      mobileNav.classList.remove('open');
-    }
-
-    // Sticky nav
+    // ── Sticky nav ──
     const siteNav = document.getElementById('site-nav');
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        siteNav.classList.add('scrolled');
-      } else {
-        siteNav.classList.remove('scrolled');
-      }
+      siteNav.classList.toggle('scrolled', window.scrollY > 10);
     });
 
-    // Form submission with localStorage
+    // ── Booking form ──
     const bookingForm = document.getElementById('booking-form');
     const formSuccess = document.getElementById('form-success');
+    const submitBtn   = bookingForm.querySelector('.submit-btn');
 
-    bookingForm?.addEventListener('submit', (e) => {
-      // Save to localStorage before submitting
-      const formData = new FormData(bookingForm);
-      const inquiry = {
-        id: Date.now(),
-        timestamp: new Date().toISOString(),
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        event_type: formData.get('event_type'),
-        event_date: formData.get('event_date'),
-        event_time: formData.get('event_time'),
-        guests: formData.get('guests'),
-        location: formData.get('location'),
-        budget: formData.get('budget'),
-        notes: formData.get('notes'),
-        status: 'new'
-      };
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      // Get existing inquiries
-      let inquiries = JSON.parse(localStorage.getItem('foodtruck_inquiries') || '[]');
-      inquiries.push(inquiry);
-      localStorage.setItem('foodtruck_inquiries', JSON.stringify(inquiries));
+      const name       = document.getElementById('name').value.trim();
+      const phone      = document.getElementById('phone').value.trim();
+      const email      = document.getElementById('email').value.trim();
+      const event_type = document.getElementById('event_type').value;
+      const event_date = document.getElementById('event_date').value;
+      const event_time = document.getElementById('event_time').value;
+      const guests     = parseInt(document.getElementById('guests').value);
+      const location   = document.getElementById('location').value.trim();
+      const budget     = document.getElementById('budget').value;
+      const notes      = document.getElementById('notes').value.trim();
 
-      // Show success message
-      formSuccess.classList.add('show');
+      // ── Disable button while processing ──
+      submitBtn.textContent = 'Checking availability...';
+      submitBtn.disabled = true;
+
+      // ── Double-booking check ──
+      const { data: existing, error: checkError } = await _supabase
+        .from('food_truck_bookings')
+        .select('id')
+        .eq('event_date', event_date)
+        .neq('status', 'declined');
+
+      if (checkError) {
+        showFormError('Something went wrong. Please try again or call us at 724-385-0522.');
+        resetBtn(); return;
+      }
+
+      if (existing && existing.length > 0) {
+        showFormError('Sorry, that date is already booked. Please choose a different date or call us at 724-385-0522.');
+        resetBtn(); return;
+      }
+
+      // ── Insert into Supabase ──
+      submitBtn.textContent = 'Submitting...';
+      const { error: insertError } = await _supabase
+        .from('food_truck_bookings')
+        .insert([{ name, phone, email, event_type, event_date, event_time, guests, location, budget, notes, status: 'requested' }]);
+
+      if (insertError) {
+        showFormError('Submission failed. Please call us at 724-385-0522.');
+        resetBtn(); return;
+      }
+
+      // ── Send owner email via Resend ──
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer re_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'onboarding@resend.dev',
+            to: 'mbayingana777@gmail.com',
+            subject: `🚚 New Food Truck Request — ${name} on ${event_date}`,
+            html: `
+              <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+                <div style="background:#c8321a;padding:24px;border-radius:8px 8px 0 0">
+                  <h1 style="color:#fff;margin:0;font-size:22px">🚚 New Food Truck Booking Request</h1>
+                </div>
+                <div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px">
+                  <table style="width:100%;border-collapse:collapse">
+                    <tr><td style="padding:8px 0;font-weight:700;width:140px">Name</td><td style="padding:8px 0">${name}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Phone</td><td style="padding:8px 0">${phone}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Email</td><td style="padding:8px 0">${email}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Event Type</td><td style="padding:8px 0">${event_type}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Date</td><td style="padding:8px 0">${event_date}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Time</td><td style="padding:8px 0">${event_time}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Guests</td><td style="padding:8px 0">${guests}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Location</td><td style="padding:8px 0">${location}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Budget</td><td style="padding:8px 0">${budget || 'Not specified'}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Notes</td><td style="padding:8px 0">${notes || 'None'}</td></tr>
+                  </table>
+                  <div style="margin-top:20px;padding:16px;background:#fff3cd;border-radius:6px;font-size:14px">
+                    ⚡ Log in to your admin portal to confirm or decline this booking.
+                  </div>
+                </div>
+              </div>
+            `
+          })
+        });
+      } catch(emailErr) {
+        console.warn('Email notification failed:', emailErr);
+      }
+
+      // ── Show success ──
       bookingForm.style.display = 'none';
-      
-      // Reset after 3 seconds and allow Formspree to submit
-      setTimeout(() => {
-        bookingForm.submit();
-      }, 1500);
+      formSuccess.classList.add('show');
+      formSuccess.innerHTML = '✅ Request received! We\'ll confirm your booking within 24 hours.';
     });
 
-    // Show success message if redirected with booked=true
-    if (new URLSearchParams(window.location.search).get('booked') === 'true') {
-      formSuccess.classList.add('show');
-      bookingForm.style.display = 'none';
+    function showFormError(msg) {
+      let errEl = document.getElementById('form-error');
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = 'form-error';
+        errEl.style.cssText = 'margin-top:14px;padding:14px;border-radius:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;font-size:.9rem;text-align:center;';
+        bookingForm.appendChild(errEl);
+      }
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    }
+
+    function resetBtn() {
+      submitBtn.textContent = 'Send Booking Request';
+      submitBtn.disabled = false;
     }
   </script>
 </body>
