@@ -325,11 +325,7 @@
 
           <div class="form-divider"><span>or send us a message</span></div>
 
-          <!-- ✅ Formspree endpoint — no backend, no Supabase -->
-          <form id="catering-form" action="https://formspree.io/f/xkoadknl" method="POST">
-            <input type="hidden" name="_subject" value="New Catering Inquiry — Annie Lee's Southern Kitchen" />
-            <!-- Redirect back to this page with a success flag after submission -->
-            <input type="hidden" name="_next" value="https://mbayingana777-del.github.io/annie-lee-soithern-kitchen-2/catering.html?submitted=true" />
+          <form id="catering-form">
 
             <div class="form-grid">
               <div class="form-field">
@@ -425,23 +421,106 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // ── Supabase init ──
+    const _supabase = window.supabase.createClient(
+      'https://dcxqorxmezakztyfyfbq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY'
+    );
+
+    // ── Mobile nav ──
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobile-nav');
     const navClose  = document.getElementById('nav-close');
     hamburger.addEventListener('click', () => mobileNav.classList.add('open'));
-    navClose.addEventListener('click', () => mobileNav.classList.remove('open'));
+    navClose.addEventListener('click',  () => mobileNav.classList.remove('open'));
     function closeMobileNav() { mobileNav.classList.remove('open'); }
 
     window.addEventListener('scroll', () => {
       document.getElementById('site-nav').classList.toggle('scrolled', window.scrollY > 10);
     });
 
-    // Show success message if redirected back after Formspree submission
-    if (window.location.search.includes('submitted=true')) {
-      document.getElementById('catering-form').style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
-    }
+    // ── Catering form ──
+    const cateringForm = document.getElementById('catering-form');
+    const formSuccess  = document.getElementById('form-success');
+    const submitBtn    = cateringForm.querySelector('button[type="submit"]');
+
+    cateringForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name        = document.getElementById('name').value.trim();
+      const phone       = document.getElementById('phone').value.trim();
+      const email       = document.getElementById('email').value.trim();
+      const event_date  = document.getElementById('date').value;
+      const guest_count = document.getElementById('guests').value;
+      const details     = document.getElementById('details').value.trim();
+
+      // ── Disable button while processing ──
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
+
+      // ── Insert into Supabase ──
+      const { error: insertError } = await _supabase
+        .from('catering_requests')
+        .insert([{ name, phone, email, event_date, guest_count, details, status: 'open' }]);
+
+      if (insertError) {
+        submitBtn.textContent = 'Send Catering Request';
+        submitBtn.disabled = false;
+        let errEl = document.getElementById('catering-error');
+        if (!errEl) {
+          errEl = document.createElement('div');
+          errEl.id = 'catering-error';
+          errEl.style.cssText = 'margin-top:14px;padding:14px;border-radius:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#f87171;font-size:.9rem;text-align:center;';
+          cateringForm.appendChild(errEl);
+        }
+        errEl.textContent = 'Submission failed. Please call us at 724-385-0522.';
+        return;
+      }
+
+      // ── Send owner email via Resend ──
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer re_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            from: 'onboarding@resend.dev',
+            to: 'mbayingana777@gmail.com',
+            subject: `🍽️ New Catering Request — ${name}`,
+            html: `
+              <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+                <div style="background:#c8321a;padding:24px;border-radius:8px 8px 0 0">
+                  <h1 style="color:#fff;margin:0;font-size:22px">🍽️ New Catering Request</h1>
+                </div>
+                <div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px">
+                  <table style="width:100%;border-collapse:collapse">
+                    <tr><td style="padding:8px 0;font-weight:700;width:140px">Name</td><td style="padding:8px 0">${name}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Phone</td><td style="padding:8px 0">${phone}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Email</td><td style="padding:8px 0">${email}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Event Date</td><td style="padding:8px 0">${event_date || 'Not specified'}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Guest Count</td><td style="padding:8px 0">${guest_count}</td></tr>
+                    <tr><td style="padding:8px 0;font-weight:700">Details</td><td style="padding:8px 0">${details || 'None'}</td></tr>
+                  </table>
+                  <div style="margin-top:20px;padding:16px;background:#fff3cd;border-radius:6px;font-size:14px">
+                    ⚡ Log in to your admin portal to manage this request.
+                  </div>
+                </div>
+              </div>
+            `
+          })
+        });
+      } catch(emailErr) {
+        console.warn('Email notification failed:', emailErr);
+      }
+
+      // ── Show success ──
+      cateringForm.style.display = 'none';
+      formSuccess.style.display = 'block';
+    });
   </script>
 
 </body>
