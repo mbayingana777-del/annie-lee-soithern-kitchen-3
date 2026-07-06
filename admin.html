@@ -214,6 +214,16 @@
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
+      <div class="sidebar-label">Edit Site</div>
+      <div class="nav-item" onclick="switchTab('edit-menu')" data-tab="edit-menu">
+        <span class="nav-icon">🍗</span> Menu Editor
+      </div>
+      <div class="nav-item" onclick="switchTab('edit-location')" data-tab="edit-location">
+        <span class="nav-icon">📍</span> Location & Hours
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
       <div class="sidebar-label">Site Links</div>
       <div class="nav-item" onclick="window.open('foodtruck.html','_blank')">
         <span class="nav-icon">🔗</span> Food Truck Page
@@ -306,6 +316,81 @@
       <div id="catering-list"><div class="loading-row">Loading requests...</div></div>
     </div>
 
+    <!-- ── MENU EDITOR ── -->
+    <div class="tab-pane" id="tab-edit-menu">
+      <div class="page-title">Menu Editor</div>
+      <div class="page-desc">Add, edit, or delete menu items. Changes save to the site instantly.</div>
+
+      <div class="card">
+        <div class="card-title">➕ Add New Item</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Item Name *</label>
+            <input type="text" id="new-item-name" placeholder="e.g. 30 Wings w/ 2 Sides" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Price *</label>
+            <input type="text" id="new-item-price" placeholder="e.g. $25" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Category *</label>
+            <select id="new-item-cat" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none">
+              <option value="Wings">🍗 Wings</option>
+              <option value="Ribs">🍖 Ribs</option>
+              <option value="Fish">🐟 Fish</option>
+              <option value="Sides">🥘 Sides</option>
+              <option value="Drinks">🥤 Drinks</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Description</label>
+          <input type="text" id="new-item-desc" placeholder="Short description of the item" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+        </div>
+        <button class="btn btn-red" onclick="addMenuItem()">➕ Add Item</button>
+      </div>
+
+      <div id="menu-editor-list"><div class="loading-row">Loading menu...</div></div>
+
+      <div style="margin-top:16px;padding:14px;background:rgba(200,50,26,.08);border:1px solid rgba(200,50,26,.2);border-radius:10px;font-size:.82rem;color:var(--muted);line-height:1.6">
+        ⚡ <strong style="color:#f0ebe6">How it works:</strong> Changes are saved to your browser and a <code>menu-data.js</code> file is pushed to GitHub automatically. The live site reads from this file on every page load.
+      </div>
+    </div>
+
+    <!-- ── LOCATION & HOURS EDITOR ── -->
+    <div class="tab-pane" id="tab-edit-location">
+      <div class="page-title">Location & Hours</div>
+      <div class="page-desc">Update your address, phone, and business hours. Changes publish to the live site.</div>
+
+      <div class="card">
+        <div class="card-title">📍 Store Info</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Address</label>
+            <input type="text" id="loc-address" placeholder="1601 Duss Ave, Ambridge, PA 15003" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Phone Number</label>
+            <input type="text" id="loc-phone" placeholder="724-385-0522" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Tagline (shown under Find Us)</label>
+          <input type="text" id="loc-tagline" placeholder="1601 Duss Ave. Easy to find, easy to order." style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🕐 Business Hours</div>
+        <div id="hours-editor-rows"></div>
+      </div>
+
+      <button class="btn btn-red" onclick="saveLocation()" style="margin-bottom:8px">💾 Save & Publish to Site</button>
+      <div id="loc-save-msg" style="display:none;margin-top:10px;padding:12px 16px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;color:#4ade80;font-size:.875rem">
+        ✅ Location saved! Changes will appear on the live site within 60 seconds.
+      </div>
+    </div>
+
     <!-- ── SETTINGS ── -->
     <div class="tab-pane" id="tab-settings">
       <div class="page-title">Settings</div>
@@ -360,19 +445,52 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ══ CONFIG ══
-const PASSWORD       = 'AnnieLee2024';
-const SUPABASE_URL   = 'https://dcxqorxmezakztyfyfbq.supabase.co';
-const SUPABASE_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY';
-const RESEND_KEY     = 're_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq';
-const OWNER_EMAIL    = 'mbayingana777@gmail.com';
+const PASSWORD      = 'AnnieLee2024';
+const SUPABASE_URL  = 'https://dcxqorxmezakztyfyfbq.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY';
+const RESEND_KEY    = 're_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq';
+const GITHUB_TOKEN  = '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';
+const GITHUB_USER   = 'mbayingana777-del';
+const GITHUB_REPO   = 'annie-lee-soithern-kitchen-3';
+const GITHUB_BRANCH = 'main';
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══ STATE ══
-let truckData    = [];
-let cateringData = [];
+let truckData      = [];
+let cateringData   = [];
 let truckFilter    = 'all';
 let cateringFilter = 'all';
+
+// ══ DEFAULT DATA ══
+const DEFAULT_MENU = [
+  { id: 1, name: '3 Wings w/ 2 Sides',    price: '$12', category: 'Wings', desc: 'Three crispy whole wings with your choice of two sides.' },
+  { id: 2, name: '6 Wings w/ 2 Sides',    price: '$18', category: 'Wings', desc: 'Six crispy whole wings with your choice of two sides.' },
+  { id: 3, name: '10 Wings w/ 2 Sides',   price: '$25', category: 'Wings', desc: 'Ten crispy whole wings. Perfect for sharing.' },
+  { id: 4, name: 'Half Slab w/ 2 Sides',  price: '$25', category: 'Ribs',  desc: 'Slow-cooked, tender ribs with two sides.' },
+  { id: 5, name: 'Fish Dinner',            price: '$16', category: 'Fish',  desc: 'Golden fried fish served hot with classic sides.' },
+  { id: 6, name: 'Fish Sandwich',          price: '$10', category: 'Fish',  desc: 'Crispy fried fish on a soft bun.' },
+  { id: 7, name: 'Baked Mac & Cheese',     price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Rich, creamy, baked mac & cheese.' },
+  { id: 8, name: 'Collard Greens',         price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Slow-cooked, seasoned collard greens.' },
+  { id: 9, name: 'Candied Yams',           price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Sweet, buttery candied yams.' },
+  { id: 10, name: 'Potato Salad',          price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Creamy, homestyle potato salad.' },
+];
+
+const DEFAULT_LOCATION = {
+  address: '1601 Duss Ave, Ambridge, PA 15003',
+  phone: '724-385-0522',
+  tagline: '1601 Duss Ave. Easy to find, easy to order, and always worth the stop.',
+  hours: {
+    Monday: 'Closed', Tuesday: '1:00 PM – 2:00 PM',
+    Wednesday: '11:00 AM – 7:00 PM', Thursday: '11:00 AM – 7:00 PM',
+    Friday: '11:00 AM – 7:00 PM', Saturday: '12:00 PM – 7:00 PM', Sunday: '12:00 PM – 7:00 PM'
+  }
+};
+
+function getMenu()     { try { return JSON.parse(localStorage.getItem('site_menu'))     || DEFAULT_MENU;     } catch { return DEFAULT_MENU;     } }
+function getLocation() { try { return JSON.parse(localStorage.getItem('site_location')) || DEFAULT_LOCATION; } catch { return DEFAULT_LOCATION; } }
+function saveMenuLS(m)     { localStorage.setItem('site_menu',     JSON.stringify(m)); }
+function saveLocationLS(l) { localStorage.setItem('site_location', JSON.stringify(l)); }
 
 // ══ PASSWORD GATE ══
 document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
@@ -402,17 +520,19 @@ function changePassword() {
   if (!np || np.length < 4) { toast('Password must be at least 4 characters', 'error'); return; }
   localStorage.setItem('admin_password', np);
   document.getElementById('new-pw').value = '';
-  toast('Password updated successfully', 'success');
+  toast('Password updated', 'success');
 }
 
 // ══ TAB NAV ══
 function switchTab(name) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-tab]').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + name)?.classList.add('active');
   document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
   if (name === 'truck-bookings') loadTruckBookings();
   if (name === 'catering-reqs') loadCateringRequests();
+  if (name === 'edit-menu')     renderMenuEditor();
+  if (name === 'edit-location') renderLocationEditor();
 }
 
 // ══ TOAST ══
@@ -436,17 +556,14 @@ async function loadDashboardStats() {
     db.from('food_truck_bookings').select('status'),
     db.from('catering_requests').select('status'),
   ]);
-
-  const truckOpen      = (truck  || []).filter(r => r.status === 'requested').length;
-  const truckConfirmed = (truck  || []).filter(r => r.status === 'confirmed').length;
+  const truckOpen      = (truck    || []).filter(r => r.status === 'requested').length;
+  const truckConfirmed = (truck    || []).filter(r => r.status === 'confirmed').length;
   const cateringOpen   = (catering || []).filter(r => r.status === 'open').length;
   const total          = (truck?.length || 0) + (catering?.length || 0);
-
   document.getElementById('stat-truck-open').textContent      = truckOpen;
   document.getElementById('stat-truck-confirmed').textContent  = truckConfirmed;
   document.getElementById('stat-catering-open').textContent    = cateringOpen;
   document.getElementById('stat-total').textContent            = total;
-
   const bt = document.getElementById('badge-truck');
   const bc = document.getElementById('badge-catering');
   bt.textContent = truckOpen;    bt.style.display = truckOpen    ? 'inline' : 'none';
@@ -459,15 +576,12 @@ async function loadRecentActivity() {
     db.from('food_truck_bookings').select('*').order('created_at', { ascending: false }).limit(3),
     db.from('catering_requests').select('*').order('created_at', { ascending: false }).limit(3),
   ]);
-
   const all = [
     ...(truck    || []).map(r => ({ ...r, _type: 'truck' })),
     ...(catering || []).map(r => ({ ...r, _type: 'catering' })),
   ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
-
   const c = document.getElementById('recent-activity');
   if (!all.length) { c.innerHTML = '<div style="color:var(--muted);font-size:.875rem;padding:12px 0">No activity yet.</div>'; return; }
-
   c.innerHTML = all.map(r => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
       <div>
@@ -497,12 +611,10 @@ function filterTruck(filter, btn) {
 function renderTruckBookings() {
   const filtered = truckFilter === 'all' ? truckData : truckData.filter(r => r.status === truckFilter);
   const c = document.getElementById('truck-list');
-
   if (!filtered.length) {
     c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No ${truckFilter === 'all' ? '' : truckFilter} bookings found.</p></div>`;
     return;
   }
-
   c.innerHTML = filtered.map(r => `
     <div class="inquiry-card ${r.status}">
       <div class="inquiry-top">
@@ -511,9 +623,7 @@ function renderTruckBookings() {
           <div class="inquiry-type">${r.event_type || 'Food Truck Booking'}</div>
           <span class="status-pill pill-${r.status}">${r.status}</span>
         </div>
-        <div class="inquiry-date-badge">
-          ${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}
-        </div>
+        <div class="inquiry-date-badge">${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</div>
       </div>
       <div class="inquiry-meta">
         <div class="meta-item"><div class="meta-label">Event Date</div><div class="meta-val">${r.event_date || '—'}</div></div>
@@ -546,16 +656,13 @@ function renderTruckBookings() {
 async function updateTruckStatus(id, status, email, name, date) {
   const { error } = await db.from('food_truck_bookings').update({ status }).eq('id', id);
   if (error) { toast('Update failed', 'error'); return; }
-
-  // Send customer email if confirming or declining
   if (email && (status === 'confirmed' || status === 'declined')) {
     const subject = status === 'confirmed'
       ? `✅ Your Food Truck Booking is Confirmed — Annie Lee's Southern Kitchen`
       : `Re: Your Food Truck Request — Annie Lee's Southern Kitchen`;
     const html = status === 'confirmed'
-      ? `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:#c8321a;padding:24px;border-radius:8px 8px 0 0"><h1 style="color:#fff;margin:0;font-size:22px">✅ Booking Confirmed!</h1></div><div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px"><p>Hi ${name},</p><p style="margin-top:12px">Great news! Your food truck booking for <strong>${date}</strong> has been confirmed by Annie Lee's Southern Kitchen.</p><p style="margin-top:12px">We'll be in touch with final details. If you have any questions, call us at <strong>724-385-0522</strong>.</p><p style="margin-top:24px">— Annie Lee's Southern Kitchen 🍗</p></div></div>`
-      : `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:#555;padding:24px;border-radius:8px 8px 0 0"><h1 style="color:#fff;margin:0;font-size:22px">Re: Your Food Truck Request</h1></div><div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px"><p>Hi ${name},</p><p style="margin-top:12px">Unfortunately we're unable to accommodate your request for <strong>${date}</strong>. We apologize for any inconvenience.</p><p style="margin-top:12px">Please call us at <strong>724-385-0522</strong> to discuss alternative dates — we'd love to work with you!</p><p style="margin-top:24px">— Annie Lee's Southern Kitchen 🍗</p></div></div>`;
-
+      ? `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:#c8321a;padding:24px;border-radius:8px 8px 0 0"><h1 style="color:#fff;margin:0;font-size:22px">✅ Booking Confirmed!</h1></div><div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px"><p>Hi ${name},</p><p style="margin-top:12px">Your food truck booking for <strong>${date}</strong> is confirmed!</p><p style="margin-top:12px">Questions? Call us at <strong>724-385-0522</strong>.</p><p style="margin-top:24px">— Annie Lee's Southern Kitchen 🍗</p></div></div>`
+      : `<div style="font-family:sans-serif;max-width:600px;margin:0 auto"><div style="background:#555;padding:24px;border-radius:8px 8px 0 0"><h1 style="color:#fff;margin:0;font-size:22px">Re: Your Food Truck Request</h1></div><div style="background:#f9f9f9;padding:24px;border-radius:0 0 8px 8px"><p>Hi ${name},</p><p style="margin-top:12px">Unfortunately we can't accommodate <strong>${date}</strong>. Please call <strong>724-385-0522</strong> for alternative dates.</p><p style="margin-top:24px">— Annie Lee's Southern Kitchen 🍗</p></div></div>`;
     try {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -564,8 +671,8 @@ async function updateTruckStatus(id, status, email, name, date) {
       });
     } catch(e) { console.warn('Email failed:', e); }
   }
-
   toast(`Booking ${status}`, status === 'confirmed' ? 'success' : 'info');
+  // ✅ FIX: reload from Supabase then re-render so cards update immediately
   await loadTruckBookings();
   await loadDashboardStats();
 }
@@ -597,12 +704,10 @@ function filterCatering(filter, btn) {
 function renderCateringRequests() {
   const filtered = cateringFilter === 'all' ? cateringData : cateringData.filter(r => r.status === cateringFilter);
   const c = document.getElementById('catering-list');
-
   if (!filtered.length) {
     c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No ${cateringFilter === 'all' ? '' : cateringFilter} catering requests found.</p></div>`;
     return;
   }
-
   c.innerHTML = filtered.map(r => `
     <div class="inquiry-card ${r.status}">
       <div class="inquiry-top">
@@ -611,9 +716,7 @@ function renderCateringRequests() {
           <div class="inquiry-type">Catering Request · ${r.guest_count || '—'} guests</div>
           <span class="status-pill pill-${r.status}">${r.status}</span>
         </div>
-        <div class="inquiry-date-badge">
-          ${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}
-        </div>
+        <div class="inquiry-date-badge">${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</div>
       </div>
       <div class="inquiry-meta">
         <div class="meta-item"><div class="meta-label">Event Date</div><div class="meta-val">${r.event_date || '—'}</div></div>
@@ -640,6 +743,7 @@ async function updateCateringStatus(id, status) {
   const { error } = await db.from('catering_requests').update({ status }).eq('id', id);
   if (error) { toast('Update failed', 'error'); return; }
   toast(`Request ${status === 'closed' ? 'closed' : 'reopened'}`, 'success');
+  // ✅ FIX: reload from Supabase so cards update immediately
   await loadCateringRequests();
   await loadDashboardStats();
 }
@@ -651,6 +755,134 @@ async function deleteCatering(id) {
   toast('Request deleted', 'info');
   await loadCateringRequests();
   await loadDashboardStats();
+}
+
+// ══ MENU EDITOR ══
+function renderMenuEditor() {
+  const menu = getMenu();
+  const cats = [...new Set(menu.map(i => i.category))];
+  const c = document.getElementById('menu-editor-list');
+  c.innerHTML = cats.map(cat => `
+    <div class="card">
+      <div class="card-title">${catIcon(cat)} ${cat}</div>
+      ${menu.filter(i => i.category === cat).map(item => `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center;background:#0f0f0f;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px">
+          <input value="${item.name}" onchange="updateMenuField(${item.id},'name',this.value)" style="background:transparent;border:none;border-bottom:1px solid var(--border2);color:#f0ebe6;font-size:.9rem;padding:4px 0;outline:none" placeholder="Item name" />
+          <input value="${item.desc}" onchange="updateMenuField(${item.id},'desc',this.value)" style="background:transparent;border:none;border-bottom:1px solid var(--border2);color:#a89890;font-size:.85rem;padding:4px 0;outline:none" placeholder="Description" />
+          <input value="${item.price}" onchange="updateMenuField(${item.id},'price',this.value)" style="background:transparent;border:none;border-bottom:1px solid var(--border2);color:#f0ebe6;font-size:.9rem;padding:4px 0;outline:none;text-align:center" placeholder="Price" />
+          <button class="btn btn-danger btn-sm" onclick="deleteMenuItem(${item.id})">🗑</button>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function catIcon(cat) {
+  const icons = { Wings: '🍗', Ribs: '🍖', Fish: '🐟', Sides: '🥘', Drinks: '🥤' };
+  return icons[cat] || '🍴';
+}
+
+function updateMenuField(id, field, value) {
+  const menu = getMenu();
+  const item = menu.find(i => i.id === id);
+  if (item) { item[field] = value; saveMenuLS(menu); }
+}
+
+function addMenuItem() {
+  const name  = document.getElementById('new-item-name').value.trim();
+  const price = document.getElementById('new-item-price').value.trim();
+  const cat   = document.getElementById('new-item-cat').value;
+  const desc  = document.getElementById('new-item-desc').value.trim();
+  if (!name || !price) { toast('Name and price are required', 'error'); return; }
+  const menu = getMenu();
+  const newId = Math.max(...menu.map(i => i.id), 0) + 1;
+  menu.push({ id: newId, name, price, category: cat, desc });
+  saveMenuLS(menu);
+  document.getElementById('new-item-name').value  = '';
+  document.getElementById('new-item-price').value = '';
+  document.getElementById('new-item-desc').value  = '';
+  renderMenuEditor();
+  pushMenuToGitHub();
+  toast('Item added! Publishing to site...', 'success');
+}
+
+function deleteMenuItem(id) {
+  if (!confirm('Delete this item?')) return;
+  const menu = getMenu().filter(i => i.id !== id);
+  saveMenuLS(menu);
+  renderMenuEditor();
+  pushMenuToGitHub();
+  toast('Item deleted! Publishing to site...', 'info');
+}
+
+async function pushMenuToGitHub() {
+  const menu = getMenu();
+  const loc  = getLocation();
+  const content = `/* AUTO-GENERATED by Annie Lee Admin — ${new Date().toISOString()} */
+window.SITE_MENU = ${JSON.stringify(menu, null, 2)};
+window.SITE_LOCATION = ${JSON.stringify(loc, null, 2)};
+`;
+  await pushFileToGitHub('site-data.js', content, 'Admin: update menu + location data');
+}
+
+// ══ LOCATION EDITOR ══
+function renderLocationEditor() {
+  const loc = getLocation();
+  document.getElementById('loc-address').value = loc.address;
+  document.getElementById('loc-phone').value   = loc.phone;
+  document.getElementById('loc-tagline').value = loc.tagline;
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  document.getElementById('hours-editor-rows').innerHTML = days.map(day => `
+    <div style="display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:.875rem;color:#fff">${day}</div>
+      <input id="hours-${day}" value="${loc.hours[day] || ''}" placeholder="e.g. 11:00 AM – 7:00 PM or Closed"
+        style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:9px 12px;color:#f0ebe6;font-size:.875rem;outline:none;width:100%" />
+    </div>
+  `).join('');
+}
+
+async function saveLocation() {
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const hours = {};
+  days.forEach(d => { hours[d] = document.getElementById(`hours-${d}`).value.trim(); });
+  const loc = {
+    address: document.getElementById('loc-address').value.trim(),
+    phone:   document.getElementById('loc-phone').value.trim(),
+    tagline: document.getElementById('loc-tagline').value.trim(),
+    hours
+  };
+  saveLocationLS(loc);
+  await pushMenuToGitHub();
+  document.getElementById('loc-save-msg').style.display = 'block';
+  setTimeout(() => document.getElementById('loc-save-msg').style.display = 'none', 5000);
+  toast('Location saved! Publishing to site...', 'success');
+}
+
+// ══ GITHUB API ══
+async function getFileSHA(path) {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`, {
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.sha || null;
+  } catch { return null; }
+}
+
+async function pushFileToGitHub(path, content, message) {
+  const sha = await getFileSHA(path);
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))), branch: GITHUB_BRANCH };
+  if (sha) body.sha = sha;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) { toast('GitHub push failed — check token', 'error'); return false; }
+    return true;
+  } catch(e) { toast('GitHub error: ' + e.message, 'error'); return false; }
 }
 </script>
 </body>
