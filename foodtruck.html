@@ -61,35 +61,32 @@
     </div>
   </div>
 
-  <!-- HERO -->
-  <section class="truck-hero">
-    <div class="hero-copy">
-      <div class="hero-eyebrow">🚚 Food Truck</div>
-      <h1>Book The<em> Food Truck</em></h1>
-      <p class="hero-sub">Find us around the Triangle and grab some fresh Southern cuisine. Perfect for events, parties, and gatherings.</p>
-      <div class="hero-actions">
-        <a href="#book" class="btn btn-orange btn-lg">Book The Truck</a>
-        <a href="tel:+17243850522" class="btn btn-outline-white btn-lg">Call to Order</a>
-      </div>
-    </div>
-    <div class="hero-image">
-      <img src="assets/food-truck-hero.jpg" alt="Annie Lee's Southern Kitchen Food Truck" />
-      <div class="hero-badge">
-        <strong>Open</strong>
-        <span>Wed-Sun</span>
-      </div>
-    </div>
-  </section>
+  <!-- FLOATING BOOK BUBBLE -->
+  <a href="#book" id="book-bubble" style="
+    position:fixed;bottom:28px;right:28px;z-index:999;
+    background:#c8321a;color:#fff;
+    display:flex;align-items:center;gap:10px;
+    padding:14px 22px;border-radius:999px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:900;
+    font-size:1.1rem;text-transform:uppercase;letter-spacing:.04em;
+    box-shadow:0 8px 28px rgba(200,50,26,.55);
+    text-decoration:none;transition:transform .18s,box-shadow .18s;
+  " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 36px rgba(200,50,26,.7)'"
+     onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 28px rgba(200,50,26,.55)'">
+    🚚 Book The Truck
+  </a>
 
-  <!-- CALENDAR -->
-  <section class="section calendar-section">
+  <!-- CALENDAR — First thing customers see -->
+  <section class="section calendar-section" style="padding-top:48px;padding-bottom:48px;min-height:calc(100vh - 72px)">
     <div class="container">
-      <div class="section-header">
-        <h2>Food Truck Schedule</h2>
-        <p>See where we'll be next and plan your visit</p>
+      <div class="section-header" style="margin-bottom:28px">
+        <span style="font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#e05040;display:block;margin-bottom:8px">📅 Food Truck Schedule</span>
+        <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.4rem,4vw,3.5rem);text-transform:uppercase;letter-spacing:-.02em;color:#f0ebe6;margin-bottom:12px">When & Where<br>We'll Be Next</h2>
+        <p style="color:#a89890;font-size:1rem;max-width:52ch;margin-inline:auto;line-height:1.65">Check the calendar for upcoming stops and events. Want to book us for your own event? Hit the button below.</p>
+        <a href="#book" class="btn btn-orange btn-lg" style="margin-top:20px;display:inline-flex">🚚 Book The Truck →</a>
       </div>
       <div class="calendar-wrap">
-        <iframe src="https://calendar.google.com/calendar/embed?src=c_d0e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+        <iframe src="https://calendar.google.com/calendar/embed?src=mbayingana777%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="100%" height="700" frameborder="0" scrolling="no"></iframe>
       </div>
     </div>
   </section>
