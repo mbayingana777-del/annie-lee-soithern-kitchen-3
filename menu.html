@@ -1145,9 +1145,63 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   </script>
 
-  <!-- Lead Capture & CRM Integration -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ Admin Menu Sync — reads from admin localStorage and updates menu items live -->
+  <script>
+  (function() {
+    const stored = localStorage.getItem('site_menu');
+    if (!stored) return;
+    let menu;
+    try { menu = JSON.parse(stored); } catch { return; }
+    if (!menu || !menu.length) return;
 
-<script src="lead-capture.js"></script>
+    // Map category names to section IDs
+    const catMap = { Wings:'wings', Ribs:'ribs', Fish:'fish', Sides:'sides', Drinks:'drinks' };
+
+    // Group admin items by category
+    const grouped = {};
+    menu.forEach(item => {
+      const cat = item.category || 'Other';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(item);
+    });
+
+    // For each category that exists in admin data, replace the items-grid
+    Object.entries(grouped).forEach(([cat, items]) => {
+      const sectionId = catMap[cat];
+      if (!sectionId) return;
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      const grid = section.querySelector('.items-grid');
+      if (!grid) return;
+
+      // Parse price string to number for cart — strip $ and take first number
+      function parsePrice(priceStr) {
+        const match = String(priceStr).match(/\d+(\.\d+)?/);
+        return match ? parseFloat(match[0]) : 0;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const price = parsePrice(item.price);
+        const img = item.img || `assets/${item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
+        const fallback = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80';
+        return `
+          <div class="item-card" onclick="addToCart('${item.name.replace(/'/g,"\\'")}', ${price}, '${img}', this)">
+            <div class="item-card-img">
+              <img src="${img}" alt="${item.name}" loading="lazy" onerror="this.src='${fallback}'" />
+            </div>
+            <div class="item-card-body">
+              <h3>${item.name}</h3>
+              <p>${item.desc || ''}</p>
+              <div class="item-card-footer">
+                <span class="item-price">${item.price}</span>
+                <button class="item-add" aria-label="Add to order">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  })();
+  </script>
 </body>
 </html>
