@@ -440,6 +440,42 @@
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-title">➕ Quick Add Calendar Event</div>
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px">Fill this out and it'll open Google Calendar with the event pre-filled — just hit Save over there to confirm.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:600px">
+          <div style="grid-column:1/-1">
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Event Title</label>
+            <input type="text" id="qc-title" placeholder="e.g. Food Truck — Ambridge Riverfront" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div>
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Date</label>
+            <input type="date" id="qc-date" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Start</label>
+              <input type="time" id="qc-start" value="17:00" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">End</label>
+              <input type="time" id="qc-end" value="21:00" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+            </div>
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Location (optional)</label>
+            <input type="text" id="qc-location" placeholder="e.g. 1601 Duss Ave, Ambridge, PA 15003" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Details (optional)</label>
+            <textarea id="qc-details" placeholder="Any notes for this stop..." rows="2" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none;resize:vertical"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <button class="btn btn-red" onclick="quickAddCalendarEvent()">📅 Create Event in Google Calendar</button>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title">⚠️ Danger Zone</div>
         <button class="btn btn-danger" onclick="logout()">🔒 Lock Portal</button>
@@ -530,6 +566,37 @@ function changePassword() {
   localStorage.setItem('admin_password', np);
   document.getElementById('new-pw').value = '';
   toast('Password updated', 'success');
+}
+
+// ══ QUICK ADD CALENDAR EVENT ══
+function quickAddCalendarEvent() {
+  const title    = document.getElementById('qc-title').value.trim();
+  const date     = document.getElementById('qc-date').value;
+  const start    = document.getElementById('qc-start').value;
+  const end      = document.getElementById('qc-end').value;
+  const location = document.getElementById('qc-location').value.trim();
+  const details  = document.getElementById('qc-details').value.trim();
+
+  if (!title)      { toast('Enter an event title', 'error'); return; }
+  if (!date)        { toast('Pick a date', 'error'); return; }
+  if (!start || !end) { toast('Pick a start and end time', 'error'); return; }
+
+  // Google's TEMPLATE action expects UTC-less local-format dates: YYYYMMDDTHHMMSS
+  const toGCalStamp = (d, t) => d.replace(/-/g, '') + 'T' + t.replace(':', '') + '00';
+  const dates = `${toGCalStamp(date, start)}/${toGCalStamp(date, end)}`;
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: dates,
+    ctz: 'America/New_York'
+  });
+  if (location) params.set('location', location);
+  if (details)  params.set('details', details);
+
+  const url = `https://calendar.google.com/calendar/render?${params.toString()}`;
+  window.open(url, '_blank');
+  toast('Opening Google Calendar — hit Save there to confirm', 'success');
 }
 
 // ══ TAB NAV ══
