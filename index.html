@@ -855,7 +855,7 @@
         <div class="location-copy reveal">
           <span class="kicker">Find us</span>
           <h2>Right here in Ambridge.</h2>
-          <p>1601 Duss Ave. Easy to find, easy to order, and always worth the stop.</p>
+          <p id="site-tagline">1601 Duss Ave. Easy to find, easy to order, and always worth the stop.</p>
           <table class="hours-table">
   <tr><td>Monday</td><td>Closed</td></tr>
   <tr><td>Tuesday</td><td>1:00 PM – 2:00 PM</td></tr>
@@ -867,14 +867,14 @@
 </table>
           <div class="location-actions">
             <a href="tel:+17243850522" class="btn btn-green">Call 724-385-0522</a>
-            <a href="https://maps.google.com/?q=1601+Duss+Ave,+Ambridge,+PA+15003" target="_blank" rel="noopener" class="btn btn-dark">Get Directions &rarr;</a>
+            <a id="site-directions-link" href="https://maps.google.com/?q=1601+Duss+Ave,+Ambridge,+PA+15003" target="_blank" rel="noopener" class="btn btn-dark">Get Directions &rarr;</a>
           </div>
         </div>
         <div class="location-map reveal" id="map-container">
           <div class="map-inner">
             <iframe
               id="location-map-frame"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3033.5!2d-80.2290!3d40.5940!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8834f3b1e3c0e1a1%3A0x1!2s1601+Duss+Ave%2C+Ambridge%2C+PA+15003!5e0!3m2!1sen!2sus!4v1700000000000"
+              src="https://www.google.com/maps?q=1601+Duss+Ave,+Ambridge,+PA+15003&output=embed"
               allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
               title="Annie Lee's Southern Kitchen location map">
             </iframe>
@@ -883,7 +883,7 @@
                 <div class="map-pin-icon">📍</div>
                 <div class="map-pin-info">
                   <strong>Annie Lee's Southern Kitchen</strong>
-                  <span>1601 Duss Ave, Ambridge, PA 15003</span>
+                  <span id="site-address">1601 Duss Ave, Ambridge, PA 15003</span>
                 </div>
               </div>
               <button class="map-open-btn" onclick="activateMap()">Tap to interact</button>
@@ -1013,5 +1013,38 @@
   <!-- Lead Capture & CRM Integration -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="lead-capture.js"></script>
+  <!-- ✅ Live Settings Sync — pulls address/phone/hours from the same Supabase table admin.html edits -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async function() {
+    try {
+      const _db = window.supabase.createClient(
+        'https://dcxqorxmezakztyfyfbq.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY'
+      );
+      const { data: s, error } = await _db.from('site_settings').select('*').eq('id', 1).maybeSingle();
+      if (error || !s) return; // keep the hand-written content as-is
+
+      if (s.tagline) { const el = document.getElementById('site-tagline'); if (el) el.textContent = s.tagline; }
+      if (s.address) {
+        const el = document.getElementById('site-address'); if (el) el.textContent = s.address;
+        const encoded = encodeURIComponent(s.address);
+        const frame = document.getElementById('location-map-frame');
+        if (frame) frame.src = `https://www.google.com/maps?q=${encoded}&output=embed`;
+        const dirLink = document.getElementById('site-directions-link');
+        if (dirLink) dirLink.href = `https://maps.google.com/?q=${encoded}`;
+      }
+
+      if (s.hours) {
+        document.querySelectorAll('.hours-table tr').forEach(row => {
+          const cells = row.querySelectorAll('td');
+          if (cells.length < 2) return;
+          const day = cells[0].textContent.trim();
+          if (s.hours[day] !== undefined) cells[1].textContent = s.hours[day];
+        });
+      }
+    } catch (e) { console.warn('Live settings sync unavailable:', e); }
+  })();
+  </script>
 </body>
 </html>
