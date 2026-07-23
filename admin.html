@@ -349,12 +349,17 @@
             <input type="text" id="new-item-desc" placeholder="Short description of the item" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
           </div>
           <div>
-            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Image URL (optional)</label>
-            <input type="url" id="new-item-img" placeholder="https://... paste any image link" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;font-size:.9rem;outline:none" />
+            <label style="display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Photo</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <label for="new-item-photo" style="display:flex;align-items:center;gap:6px;background:#1e1e1e;border:1.5px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:.85rem;font-weight:700;color:#f0ebe6;cursor:pointer;white-space:nowrap">
+                📷 Upload Photo
+              </label>
+              <input type="file" id="new-item-photo" accept="image/*" style="display:none" onchange="handleNewItemPhoto(this)" />
+              <img id="new-item-photo-preview" style="display:none;width:40px;height:40px;object-fit:cover;border-radius:6px" />
+              <span id="new-item-photo-status" style="font-size:.78rem;color:var(--muted2)"></span>
+            </div>
+            <input type="hidden" id="new-item-img" />
           </div>
-        </div>
-        <div style="font-size:.75rem;color:var(--muted2);margin-bottom:14px;line-height:1.5">
-          💡 <strong style="color:var(--muted)">Image tip:</strong> Upload a photo to Google Drive or Google Photos → right-click → "Copy image address" → paste here. Or use any direct image URL.
         </div>
         <button class="btn btn-red" onclick="addMenuItem()">➕ Add Item</button>
       </div>
@@ -362,7 +367,7 @@
       <div id="menu-editor-list"><div class="loading-row">Loading menu...</div></div>
 
       <div style="margin-top:16px;padding:14px;background:rgba(200,50,26,.08);border:1px solid rgba(200,50,26,.2);border-radius:10px;font-size:.82rem;color:var(--muted);line-height:1.6">
-        ⚡ <strong style="color:#f0ebe6">How it works:</strong> Changes are saved to your browser and a <code>menu-data.js</code> file is pushed to GitHub automatically. The live site reads from this file on every page load.
+        ⚡ <strong style="color:#f0ebe6">How it works:</strong> Menu items live in your Supabase database now. Add, edit, or delete here and it's live on the site immediately — no publishing step, works from any device. Photos upload straight to Supabase Storage, so there's nothing to host elsewhere.
       </div>
     </div>
 
@@ -508,19 +513,8 @@ let truckFilter    = 'all';
 let cateringFilter = 'all';
 
 // ══ DEFAULT DATA ══
-const DEFAULT_MENU = [
-  { id: 1, name: '3 Wings w/ 2 Sides',    price: '$12', category: 'Wings', desc: 'Three crispy whole wings with your choice of two sides.' },
-  { id: 2, name: '6 Wings w/ 2 Sides',    price: '$18', category: 'Wings', desc: 'Six crispy whole wings with your choice of two sides.' },
-  { id: 3, name: '10 Wings w/ 2 Sides',   price: '$25', category: 'Wings', desc: 'Ten crispy whole wings. Perfect for sharing.' },
-  { id: 4, name: 'Half Slab w/ 2 Sides',  price: '$25', category: 'Ribs',  desc: 'Slow-cooked, tender ribs with two sides.' },
-  { id: 5, name: 'Fish Dinner',            price: '$16', category: 'Fish',  desc: 'Golden fried fish served hot with classic sides.' },
-  { id: 6, name: 'Fish Sandwich',          price: '$10', category: 'Fish',  desc: 'Crispy fried fish on a soft bun.' },
-  { id: 7, name: 'Baked Mac & Cheese',     price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Rich, creamy, baked mac & cheese.' },
-  { id: 8, name: 'Collard Greens',         price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Slow-cooked, seasoned collard greens.' },
-  { id: 9, name: 'Candied Yams',           price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Sweet, buttery candied yams.' },
-  { id: 10, name: 'Potato Salad',          price: 'Sm $4 · Lg $7', category: 'Sides', desc: 'Creamy, homestyle potato salad.' },
-];
-
+// Menu items now live in Supabase (menu_items table) — see the setup SQL. This file no longer
+// carries menu defaults; only Location & Hours still uses a local default fallback below.
 const DEFAULT_LOCATION = {
   address: '1601 Duss Ave, Ambridge, PA 15003',
   phone: '724-385-0522',
@@ -532,9 +526,10 @@ const DEFAULT_LOCATION = {
   }
 };
 
-function getMenu()     { try { return JSON.parse(localStorage.getItem('site_menu'))     || DEFAULT_MENU;     } catch { return DEFAULT_MENU;     } }
+// NOTE: Menu items moved to Supabase (see loadMenuItems/renderMenuEditor below) so edits
+// show on every device, not just this browser. Location/Hours still uses this localStorage +
+// GitHub-file approach for now — see diagnostic notes for why that's next in line.
 function getLocation() { try { return JSON.parse(localStorage.getItem('site_location')) || DEFAULT_LOCATION; } catch { return DEFAULT_LOCATION; } }
-function saveMenuLS(m)     { localStorage.setItem('site_menu',     JSON.stringify(m)); }
 function saveLocationLS(l) { localStorage.setItem('site_location', JSON.stringify(l)); }
 
 // ══ PASSWORD GATE ══
@@ -607,7 +602,7 @@ function switchTab(name) {
   document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
   if (name === 'truck-bookings') loadTruckBookings();
   if (name === 'catering-reqs') loadCateringRequests();
-  if (name === 'edit-menu')     renderMenuEditor();
+  if (name === 'edit-menu')     loadMenuItems();
   if (name === 'edit-location') renderLocationEditor();
 }
 
@@ -730,8 +725,18 @@ function renderTruckBookings() {
 }
 
 async function updateTruckStatus(id, status, email, name, date) {
-  const { error } = await db.from('food_truck_bookings').update({ status }).eq('id', id);
-  if (error) { toast('Update failed', 'error'); return; }
+  let data, error;
+  try {
+    ({ data, error } = await db.from('food_truck_bookings').update({ status }).eq('id', id).select());
+  } catch (e) {
+    toast('Network error — could not reach the database. Check your connection.', 'error');
+    return;
+  }
+  if (error) { toast('Update failed: ' + error.message, 'error'); return; }
+  if (!data || data.length === 0) {
+    toast('Update blocked by database permissions (RLS). See diagnostic notes.', 'error');
+    return;
+  }
   if (email && (status === 'confirmed' || status === 'declined')) {
     const subject = status === 'confirmed'
       ? `✅ Your Food Truck Booking is Confirmed — Annie Lee's Southern Kitchen`
@@ -755,8 +760,18 @@ async function updateTruckStatus(id, status, email, name, date) {
 
 async function deleteTruck(id) {
   if (!confirm('Delete this booking? This cannot be undone.')) return;
-  const { error } = await db.from('food_truck_bookings').delete().eq('id', id);
-  if (error) { toast('Delete failed', 'error'); return; }
+  let data, error;
+  try {
+    ({ data, error } = await db.from('food_truck_bookings').delete().eq('id', id).select());
+  } catch (e) {
+    toast('Network error — could not reach the database. Check your connection.', 'error');
+    return;
+  }
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  if (!data || data.length === 0) {
+    toast('Delete blocked by database permissions (RLS). See diagnostic notes.', 'error');
+    return;
+  }
   toast('Booking deleted', 'info');
   await loadTruckBookings();
   await loadDashboardStats();
@@ -816,8 +831,18 @@ function renderCateringRequests() {
 }
 
 async function updateCateringStatus(id, status) {
-  const { error } = await db.from('catering_requests').update({ status }).eq('id', id);
-  if (error) { toast('Update failed', 'error'); return; }
+  let data, error;
+  try {
+    ({ data, error } = await db.from('catering_requests').update({ status }).eq('id', id).select());
+  } catch (e) {
+    toast('Network error — could not reach the database. Check your connection.', 'error');
+    return;
+  }
+  if (error) { toast('Update failed: ' + error.message, 'error'); return; }
+  if (!data || data.length === 0) {
+    toast('Update blocked by database permissions (RLS). See diagnostic notes.', 'error');
+    return;
+  }
   toast(`Request ${status === 'closed' ? 'closed' : 'reopened'}`, 'success');
   // ✅ FIX: reload from Supabase so cards update immediately
   await loadCateringRequests();
@@ -826,28 +851,60 @@ async function updateCateringStatus(id, status) {
 
 async function deleteCatering(id) {
   if (!confirm('Delete this request? This cannot be undone.')) return;
-  const { error } = await db.from('catering_requests').delete().eq('id', id);
-  if (error) { toast('Delete failed', 'error'); return; }
+  let data, error;
+  try {
+    ({ data, error } = await db.from('catering_requests').delete().eq('id', id).select());
+  } catch (e) {
+    toast('Network error — could not reach the database. Check your connection.', 'error');
+    return;
+  }
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  if (!data || data.length === 0) {
+    toast('Delete blocked by database permissions (RLS). See diagnostic notes.', 'error');
+    return;
+  }
   toast('Request deleted', 'info');
   await loadCateringRequests();
   await loadDashboardStats();
 }
 
-// ══ MENU EDITOR ══
-function renderMenuEditor() {
-  const menu = getMenu();
-  const cats = [...new Set(menu.map(i => i.category))];
+// ══ MENU EDITOR (Supabase-backed — same DB the live site reads) ══
+let menuData = [];
+const MENU_BUCKET = 'menu-photos';
+
+async function loadMenuItems() {
   const c = document.getElementById('menu-editor-list');
+  c.innerHTML = '<div class="loading-row">Loading menu...</div>';
+  const { data, error } = await db.from('menu_items').select('*').order('sort_order', { ascending: true });
+  if (error) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Couldn't load the menu table. Run the setup SQL in Supabase first, or check your connection.<br><span style="font-size:.75rem;color:var(--muted2)">${error.message}</span></p></div>`;
+    return;
+  }
+  menuData = data || [];
+  renderMenuEditor();
+}
+
+function renderMenuEditor() {
+  const cats = [...new Set(menuData.map(i => i.category))];
+  const c = document.getElementById('menu-editor-list');
+  if (!menuData.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🍽️</div><p>No menu items yet. Add your first one above.</p></div>`;
+    return;
+  }
   c.innerHTML = cats.map(cat => `
     <div class="card">
       <div class="card-title">${catIcon(cat)} ${cat}</div>
-      ${menu.filter(i => i.category === cat).map(item => `
+      ${menuData.filter(i => i.category === cat).map(item => `
         <div style="background:#0f0f0f;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px">
           <div style="display:grid;grid-template-columns:60px 1fr;gap:12px;align-items:start">
             <div>
-              <img src="${item.img || ''}" onerror="this.style.display='none'" onload="this.style.display='block'"
-                style="width:60px;height:60px;object-fit:cover;border-radius:8px;display:${item.img ? 'block' : 'none'};margin-bottom:4px" />
-              ${!item.img ? `<div style="width:60px;height:60px;border-radius:8px;background:#1a1414;border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:4px">🍴</div>` : ''}
+              <img src="${item.img_url || ''}" id="thumb-${item.id}" onerror="this.style.display='none'"
+                style="width:60px;height:60px;object-fit:cover;border-radius:8px;display:${item.img_url ? 'block' : 'none'};margin-bottom:6px" />
+              ${!item.img_url ? `<div id="thumb-empty-${item.id}" style="width:60px;height:60px;border-radius:8px;background:#1a1414;border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:6px">🍴</div>` : ''}
+              <label style="display:block;text-align:center;font-size:.65rem;font-weight:700;color:var(--red);cursor:pointer;padding:4px 0">
+                📷 ${item.img_url ? 'Change' : 'Upload'}
+                <input type="file" accept="image/*" style="display:none" onchange="handleItemPhotoChange(${item.id}, this)" />
+              </label>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -858,24 +915,19 @@ function renderMenuEditor() {
                 </div>
                 <div>
                   <div style="font-size:.65rem;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Price</div>
-                  <input value="${item.price}" onchange="updateMenuField(${item.id},'price',this.value)"
+                  <input value="${item.price_display}" onchange="updateMenuPrice(${item.id},this.value)"
                     style="width:100%;background:#141010;border:1px solid var(--border2);border-radius:6px;color:#f0ebe6;font-size:.875rem;padding:7px 10px;outline:none" />
                 </div>
               </div>
               <div>
                 <div style="font-size:.65rem;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Description</div>
-                <input value="${item.desc || ''}" onchange="updateMenuField(${item.id},'desc',this.value)" placeholder="Short description"
+                <input value="${item.description || ''}" onchange="updateMenuField(${item.id},'description',this.value)" placeholder="Short description"
                   style="width:100%;background:#141010;border:1px solid var(--border2);border-radius:6px;color:#a89890;font-size:.85rem;padding:7px 10px;outline:none" />
               </div>
-              <div>
-                <div style="font-size:.65rem;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Image URL</div>
-                <input value="${item.img || ''}" onchange="updateMenuField(${item.id},'img',this.value)" placeholder="https://... paste image link"
-                  style="width:100%;background:#141010;border:1px solid var(--border2);border-radius:6px;color:#a89890;font-size:.82rem;padding:7px 10px;outline:none" />
-              </div>
+              ${item.is_sized ? `<div style="font-size:.7rem;color:var(--muted2)">📏 Small/Large item — sizing buttons ($4/$7) are fixed site-wide, not per-item yet.</div>` : ''}
             </div>
           </div>
           <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-            <button class="btn btn-red btn-sm" onclick="saveMenuField(${item.id})">💾 Save</button>
             <button class="btn btn-danger btn-sm" onclick="deleteMenuItem(${item.id})">🗑 Delete</button>
           </div>
         </div>
@@ -889,54 +941,88 @@ function catIcon(cat) {
   return icons[cat] || '🍴';
 }
 
-function updateMenuField(id, field, value) {
-  const menu = getMenu();
-  const item = menu.find(i => i.id === id);
-  if (item) { item[field] = value; saveMenuLS(menu); }
+function parsePriceNumeric(str) {
+  const m = String(str).match(/\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : 0;
 }
 
-function addMenuItem() {
+async function updateMenuField(id, field, value) {
+  const { error } = await db.from('menu_items').update({ [field]: value }).eq('id', id);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  const item = menuData.find(i => i.id === id);
+  if (item) item[field] = value;
+  toast('Saved', 'success');
+}
+
+async function updateMenuPrice(id, value) {
+  const { error } = await db.from('menu_items').update({ price_display: value, price_numeric: parsePriceNumeric(value) }).eq('id', id);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  toast('Saved', 'success');
+}
+
+async function uploadMenuPhoto(file) {
+  if (!file) return null;
+  const ext  = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+  const { error } = await db.storage.from(MENU_BUCKET).upload(path, file, { upsert: true });
+  if (error) { toast('Photo upload failed: ' + error.message, 'error'); return null; }
+  const { data } = db.storage.from(MENU_BUCKET).getPublicUrl(path);
+  return data?.publicUrl || null;
+}
+
+async function handleNewItemPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('new-item-photo-status').textContent = 'Uploading...';
+  const url = await uploadMenuPhoto(file);
+  if (!url) { document.getElementById('new-item-photo-status').textContent = ''; return; }
+  document.getElementById('new-item-img').value = url;
+  const preview = document.getElementById('new-item-photo-preview');
+  preview.src = url; preview.style.display = 'block';
+  document.getElementById('new-item-photo-status').textContent = '✅ Photo ready';
+}
+
+async function handleItemPhotoChange(id, input) {
+  const file = input.files[0];
+  if (!file) return;
+  toast('Uploading photo...', 'info');
+  const url = await uploadMenuPhoto(file);
+  if (!url) return;
+  const { error } = await db.from('menu_items').update({ img_url: url }).eq('id', id);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  toast('Photo updated!', 'success');
+  await loadMenuItems();
+}
+
+async function addMenuItem() {
   const name  = document.getElementById('new-item-name').value.trim();
   const price = document.getElementById('new-item-price').value.trim();
   const cat   = document.getElementById('new-item-cat').value;
   const desc  = document.getElementById('new-item-desc').value.trim();
   const img   = document.getElementById('new-item-img').value.trim();
   if (!name || !price) { toast('Name and price are required', 'error'); return; }
-  const menu  = getMenu();
-  const newId = Math.max(...menu.map(i => i.id), 0) + 1;
-  menu.push({ id: newId, name, price, category: cat, desc, img });
-  saveMenuLS(menu);
+  const { error } = await db.from('menu_items').insert([{
+    name, price_display: price, price_numeric: parsePriceNumeric(price),
+    category: cat, description: desc, img_url: img || null,
+    is_sized: false, sort_order: menuData.length + 1
+  }]);
+  if (error) { toast('Add failed: ' + error.message, 'error'); return; }
   document.getElementById('new-item-name').value  = '';
   document.getElementById('new-item-price').value = '';
   document.getElementById('new-item-desc').value  = '';
   document.getElementById('new-item-img').value   = '';
-  renderMenuEditor();
-  pushMenuToGitHub();
-  toast('Item added! Publishing to site...', 'success');
+  document.getElementById('new-item-photo-preview').style.display = 'none';
+  document.getElementById('new-item-photo-status').textContent = '';
+  toast('Item added — live on the site now!', 'success');
+  await loadMenuItems();
 }
 
-function saveMenuField(id) {
-  pushMenuToGitHub();
-  toast('Saved! Publishing to site...', 'success');
-}
-
-function deleteMenuItem(id) {
-  if (!confirm('Delete this item?')) return;
-  const menu = getMenu().filter(i => i.id !== id);
-  saveMenuLS(menu);
-  renderMenuEditor();
-  pushMenuToGitHub();
-  toast('Item deleted! Publishing to site...', 'info');
-}
-
-async function pushMenuToGitHub() {
-  const menu = getMenu();
-  const loc  = getLocation();
-  const content = `/* AUTO-GENERATED by Annie Lee Admin — ${new Date().toISOString()} */
-window.SITE_MENU = ${JSON.stringify(menu, null, 2)};
-window.SITE_LOCATION = ${JSON.stringify(loc, null, 2)};
-`;
-  await pushFileToGitHub('site-data.js', content, 'Admin: update menu + location data');
+async function deleteMenuItem(id) {
+  if (!confirm('Delete this item? It will disappear from the live menu immediately.')) return;
+  const { error } = await db.from('menu_items').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('Item deleted', 'info');
+  await loadMenuItems();
 }
 
 // ══ LOCATION EDITOR ══
@@ -966,10 +1052,18 @@ async function saveLocation() {
     hours
   };
   saveLocationLS(loc);
-  await pushMenuToGitHub();
+  await pushLocationToGitHub();
   document.getElementById('loc-save-msg').style.display = 'block';
   setTimeout(() => document.getElementById('loc-save-msg').style.display = 'none', 5000);
   toast('Location saved! Publishing to site...', 'success');
+}
+
+async function pushLocationToGitHub() {
+  const loc = getLocation();
+  const content = `/* AUTO-GENERATED by Annie Lee Admin — ${new Date().toISOString()} */
+window.SITE_LOCATION = ${JSON.stringify(loc, null, 2)};
+`;
+  await pushFileToGitHub('site-data.js', content, 'Admin: update location data');
 }
 
 // ══ GITHUB API ══
