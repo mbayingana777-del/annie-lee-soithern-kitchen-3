@@ -1145,19 +1145,29 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   </script>
 
-  <!-- ✅ Admin Menu Sync — reads from admin localStorage and updates menu items live -->
+  <!-- ✅ Live Menu Sync — pulls menu items from Supabase, same database the admin panel edits.
+       Works for every visitor on every device (the old version only worked in the browser
+       that was used to edit it, via localStorage). If this fails to load for any reason,
+       the hand-written menu above stays exactly as it is — nothing breaks. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-  (function() {
-    const stored = localStorage.getItem('site_menu');
-    if (!stored) return;
-    let menu;
-    try { menu = JSON.parse(stored); } catch { return; }
-    if (!menu || !menu.length) return;
+  (async function() {
+    let menu, error;
+    try {
+      const _menuDb = window.supabase.createClient(
+        'https://dcxqorxmezakztyfyfbq.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY'
+      );
+      ({ data: menu, error } = await _menuDb.from('menu_items').select('*').order('sort_order', { ascending: true }));
+    } catch (e) {
+      console.warn('Live menu sync unavailable, showing built-in menu:', e);
+      return;
+    }
+    if (error || !menu || !menu.length) { console.warn('Live menu sync: no data, showing built-in menu.', error); return; }
 
-    // Map category names to section IDs
     const catMap = { Wings:'wings', Ribs:'ribs', Fish:'fish', Sides:'sides', Drinks:'drinks' };
+    const fallback = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80';
 
-    // Group admin items by category
     const grouped = {};
     menu.forEach(item => {
       const cat = item.category || 'Other';
@@ -1165,7 +1175,6 @@ window.addEventListener('DOMContentLoaded', () => {
       grouped[cat].push(item);
     });
 
-    // For each category that exists in admin data, replace the items-grid
     Object.entries(grouped).forEach(([cat, items]) => {
       const sectionId = catMap[cat];
       if (!sectionId) return;
@@ -1174,26 +1183,26 @@ window.addEventListener('DOMContentLoaded', () => {
       const grid = section.querySelector('.items-grid');
       if (!grid) return;
 
-      // Parse price string to number for cart — strip $ and take first number
-      function parsePrice(priceStr) {
-        const match = String(priceStr).match(/\d+(\.\d+)?/);
-        return match ? parseFloat(match[0]) : 0;
-      }
-
       grid.innerHTML = items.map(item => {
-        const price = parsePrice(item.price);
-        const img = item.img || `assets/${item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
-        const fallback = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80';
+        const img       = item.img_url || fallback;
+        const idAttr    = item.slug ? ` id="item-${item.slug}"` : '';
+        const badgeHtml = item.badge ? `<span class="item-card-badge">${item.badge}</span>` : '';
+        const safeName  = item.name.replace(/'/g, "\\'");
+        // Sized items (small/large sides) keep using the size picker modal; everything else is a simple add
+        const onClick = item.is_sized
+          ? `openSizeModal('${safeName}', '${img}')`
+          : `addToCart('${safeName}', ${item.price_numeric || 0}, '${img}', this)`;
         return `
-          <div class="item-card" onclick="addToCart('${item.name.replace(/'/g,"\\'")}', ${price}, '${img}', this)">
+          <div class="item-card"${idAttr} onclick="${onClick}">
             <div class="item-card-img">
               <img src="${img}" alt="${item.name}" loading="lazy" onerror="this.src='${fallback}'" />
+              ${badgeHtml}
             </div>
             <div class="item-card-body">
               <h3>${item.name}</h3>
-              <p>${item.desc || ''}</p>
+              <p>${item.description || ''}</p>
               <div class="item-card-footer">
-                <span class="item-price">${item.price}</span>
+                <span class="item-price">${item.price_display}</span>
                 <button class="item-add" aria-label="Add to order">+</button>
               </div>
             </div>
@@ -1201,6 +1210,17 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
       }).join('');
     });
+
+    // Re-run the ?add= deep link (from index.html's featured items) now that live cards exist
+    const addItem = new URLSearchParams(window.location.search).get('add');
+    if (addItem) {
+      const el = document.getElementById('item-' + addItem);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.click();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
   })();
   </script>
 </body>
