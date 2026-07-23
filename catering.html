@@ -397,7 +397,7 @@
           <h4>Visit</h4>
           <ul>
             <li><a href="index.html#location">Hours</a></li>
-            <li><a href="https://maps.google.com/?q=1601+Duss+Ave,+Ambridge,+PA+15003" target="_blank" rel="noopener">Directions</a></li>
+            <li><a id="site-directions-link" href="https://maps.google.com/?q=1601+Duss+Ave,+Ambridge,+PA+15003" target="_blank" rel="noopener">Directions</a></li>
             <li><a href="tel:+17243850522">Call Us</a></li>
           </ul>
         </div>
@@ -531,6 +531,8 @@
       if (error || !s || !s.address) return;
       const el = document.getElementById('site-address');
       if (el) el.textContent = s.address;
+      const dirLink = document.getElementById('site-directions-link');
+      if (dirLink) dirLink.href = `https://maps.google.com/?q=${encodeURIComponent(s.address)}`;
     } catch (e) { console.warn('Live settings sync unavailable:', e); }
   })();
   </script>
