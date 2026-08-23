@@ -171,6 +171,9 @@
     </div>
     <button class="gate-btn" onclick="checkPassword()">Unlock →</button>
     <div class="gate-error" id="gate-error">Incorrect password. Try again.</div>
+    <div style="margin-top:16px">
+      <a href="#" onclick="resetPasswordPrompt();return false;" style="font-size:.78rem;color:#a89890;text-decoration:underline">Forgot password? Reset to default</a>
+    </div>
   </div>
 </div>
 
@@ -412,11 +415,16 @@
       <div class="card">
         <div class="card-title">🔒 Change Password</div>
         <div style="max-width:400px">
+          <div style="margin-bottom:14px;padding:10px 14px;background:#0f0f0f;border-radius:8px;font-size:.82rem;color:var(--muted)">
+            Current password: <strong id="current-pw-display" style="color:#f0ebe6">•••••</strong>
+            <button class="btn btn-dark btn-sm" style="margin-left:8px" onclick="revealCurrentPw()">Show</button>
+          </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">New Password</label>
             <input type="password" id="new-pw" placeholder="Enter new password" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:#f0ebe6;font-size:.95rem;outline:none" />
           </div>
           <button class="btn btn-red" onclick="changePassword()">Update Password</button>
+          <div style="font-size:.75rem;color:var(--muted2);margin-top:10px">⚠️ This only changes the password on THIS device/browser. Other devices keep using the old one.</div>
         </div>
       </div>
       <div class="card">
@@ -527,11 +535,23 @@ function checkPassword() {
   }
 }
 
+function resetPasswordPrompt() {
+  if (confirm('This will reset your portal password back to the default (AnnieLee2024). Continue?')) {
+    localStorage.removeItem('admin_password');
+    toast('Password reset to default', 'success');
+    document.getElementById('gate-error').style.display = 'none';
+  }
+}
+
 function logout() {
   document.getElementById('gate').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   document.getElementById('gate-pw').value = '';
   document.getElementById('gate-error').style.display = 'none';
+}
+
+function revealCurrentPw() {
+  document.getElementById('current-pw-display').textContent = localStorage.getItem('admin_password') || PASSWORD;
 }
 
 function changePassword() {
