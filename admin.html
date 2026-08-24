@@ -36,6 +36,8 @@
     .gate-btn{width:100%;padding:15px;background:var(--red);color:#fff;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;margin-top:8px;transition:background .18s}
     .gate-btn:hover{background:var(--red-dark)}
     .gate-error{display:none;background:rgba(200,50,26,.15);border:1px solid rgba(200,50,26,.3);border-radius:8px;padding:10px 14px;color:#e05040;font-size:.85rem;margin-top:14px}
+    .back-to-dash{display:inline-block;font-size:.82rem;color:var(--muted);margin-bottom:14px;text-decoration:none}
+    .back-to-dash:hover{color:var(--text)}
 
     /* ── APP SHELL ── */
     #app{display:none;height:100vh;display:grid;grid-template-rows:var(--header) 1fr;grid-template-columns:var(--sidebar) 1fr}
@@ -296,6 +298,7 @@
 
     <!-- ── FOOD TRUCK BOOKINGS ── -->
     <div class="tab-pane" id="tab-truck-bookings">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Food Truck Bookings</div>
       <div class="page-desc">All food truck booking requests. Confirm or decline each one.</div>
       <div class="filter-row">
@@ -309,6 +312,7 @@
 
     <!-- ── CATERING REQUESTS ── -->
     <div class="tab-pane" id="tab-catering-reqs">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Catering Requests</div>
       <div class="page-desc">All catering inquiries submitted via the website.</div>
       <div class="filter-row">
@@ -321,6 +325,7 @@
 
     <!-- ── MENU EDITOR ── -->
     <div class="tab-pane" id="tab-edit-menu">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Menu Editor</div>
       <div class="page-desc">Add, edit, or delete menu items. Changes save to the site instantly.</div>
 
@@ -376,6 +381,7 @@
 
     <!-- ── LOCATION & HOURS EDITOR ── -->
     <div class="tab-pane" id="tab-edit-location">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Location & Hours</div>
       <div class="page-desc">Update your address, phone, and business hours. Changes publish to the live site.</div>
 
@@ -410,6 +416,7 @@
 
     <!-- ── SETTINGS ── -->
     <div class="tab-pane" id="tab-settings">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Settings</div>
       <div class="page-desc">Manage your portal access and preferences.</div>
       <div class="card">
