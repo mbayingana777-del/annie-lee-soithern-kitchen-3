@@ -980,15 +980,15 @@ async function loadLeads() {
   ]);
   const rows = [];
   (truck.data || []).forEach(r => rows.push({
-    id: r.id, table: 'food_truck_bookings', name: r.name, phone: r.phone, email: r.email,
+    id: r.id, table: 'food_truck_bookings', name: r.name, phone: r.phone, email: r.email, address: r.location || '',
     source: 'Food Truck Booking', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
   }));
   (catering.data || []).forEach(r => rows.push({
-    id: r.id, table: 'catering_requests', name: r.name, phone: r.phone, email: r.email,
+    id: r.id, table: 'catering_requests', name: r.name, phone: r.phone, email: r.email, address: '',
     source: 'Catering Request', notes: r.details || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
   }));
   (manual.data || []).forEach(r => rows.push({
-    id: r.id, table: 'manual_leads', name: r.name, phone: r.phone, email: r.email,
+    id: r.id, table: 'manual_leads', name: r.name, phone: r.phone, email: r.email, address: '',
     source: r.source || 'Manual', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
   }));
   rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -1073,10 +1073,11 @@ async function addManualLead() {
 function exportLeadsCSV() {
   const rows = leadsFilter === 'all' ? leadsData : leadsData.filter(r => r.lead_stage === leadsFilter);
   if (!rows.length) { toast('No leads to export', 'error'); return; }
-  const headers = ['Name', 'Phone', 'Email', 'Source', 'Stage', 'Notes', 'Created'];
+  const headers = ['Name', 'Phone', 'Address', 'Notes', 'Email', 'Source', 'Stage', 'Date'];
   const csvRows = [headers.join(',')];
   rows.forEach(r => {
-    const line = [r.name, r.phone, r.email, r.source, r.lead_stage, r.notes, r.created_at]
+    const niceDate = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    const line = [r.name, r.phone, r.address, r.notes, r.email, r.source, r.lead_stage, niceDate]
       .map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
     csvRows.push(line);
   });
