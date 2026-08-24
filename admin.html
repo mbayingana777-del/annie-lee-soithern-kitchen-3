@@ -223,6 +223,13 @@
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
+      <div class="sidebar-label">CRM</div>
+      <div class="nav-item" onclick="switchTab('leads')" data-tab="leads">
+        <span class="nav-icon">🎯</span> Leads
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
       <div class="sidebar-label">Edit Site</div>
       <div class="nav-item" onclick="switchTab('edit-menu')" data-tab="edit-menu">
         <span class="nav-icon">🍗</span> Menu Editor
@@ -325,6 +332,36 @@
         <button class="filter-btn" onclick="filterCatering('closed',this)">✅ Closed</button>
       </div>
       <div id="catering-list"><div class="loading-row">Loading requests...</div></div>
+    </div>
+
+    <!-- ── LEADS / CRM ── -->
+    <div class="tab-pane" id="tab-leads">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
+      <div class="page-title">Leads</div>
+      <div class="page-desc">Every catering request, truck booking, and manually-added lead in one place.</div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">➕ Add a Lead Manually</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:600px">
+          <input id="ml-name" placeholder="Name" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
+          <input id="ml-phone" placeholder="Phone" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
+          <input id="ml-email" placeholder="Email (optional)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
+          <input id="ml-source" placeholder="Source (e.g. Phone call, Walk-in)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
+          <textarea id="ml-notes" placeholder="Notes" style="grid-column:1/-1;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;min-height:60px"></textarea>
+        </div>
+        <button class="btn btn-red" style="margin-top:10px" onclick="addManualLead()">Add Lead</button>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterLeads('all',this)">All</button>
+        <button class="filter-btn" onclick="filterLeads('new',this)">🆕 New</button>
+        <button class="filter-btn" onclick="filterLeads('contacted',this)">📞 Contacted</button>
+        <button class="filter-btn" onclick="filterLeads('qualified',this)">⭐ Qualified</button>
+        <button class="filter-btn" onclick="filterLeads('won',this)">✅ Won</button>
+        <button class="filter-btn" onclick="filterLeads('lost',this)">❌ Lost</button>
+        <button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="exportLeadsCSV()">⬇ Export CSV</button>
+      </div>
+      <div id="leads-list"><div class="loading-row">Loading leads...</div></div>
     </div>
 
     <!-- ── MENU EDITOR ── -->
@@ -661,6 +698,7 @@ function switchTab(name) {
   if (name === 'catering-reqs') loadCateringRequests();
   if (name === 'edit-menu')     loadMenuItems();
   if (name === 'edit-location') renderLocationEditor();
+  if (name === 'leads')         loadLeads();
 }
 
 // ══ TOAST ══
@@ -925,6 +963,117 @@ async function deleteCatering(id) {
   toast('Request deleted', 'info');
   await loadCateringRequests();
   await loadDashboardStats();
+}
+
+// ══ LEADS / CRM ══
+let leadsData = [];
+let leadsFilter = 'all';
+
+async function loadLeads() {
+  const c = document.getElementById('leads-list');
+  c.innerHTML = '<div class="loading-row">Loading leads...</div>';
+  const [truck, catering, manual] = await Promise.all([
+    db.from('food_truck_bookings').select('*').order('created_at', { ascending: false }),
+    db.from('catering_requests').select('*').order('created_at', { ascending: false }),
+    db.from('manual_leads').select('*').order('created_at', { ascending: false })
+  ]);
+  const rows = [];
+  (truck.data || []).forEach(r => rows.push({
+    id: r.id, table: 'food_truck_bookings', name: r.name, phone: r.phone, email: r.email,
+    source: 'Food Truck Booking', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
+  }));
+  (catering.data || []).forEach(r => rows.push({
+    id: r.id, table: 'catering_requests', name: r.name, phone: r.phone, email: r.email,
+    source: 'Catering Request', notes: r.details || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
+  }));
+  (manual.data || []).forEach(r => rows.push({
+    id: r.id, table: 'manual_leads', name: r.name, phone: r.phone, email: r.email,
+    source: r.source || 'Manual', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
+  }));
+  rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  leadsData = rows;
+  renderLeads();
+}
+
+function filterLeads(filter, btn) {
+  leadsFilter = filter;
+  document.querySelectorAll('#tab-leads .filter-row .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeads();
+}
+
+function renderLeads() {
+  const filtered = leadsFilter === 'all' ? leadsData : leadsData.filter(r => r.lead_stage === leadsFilter);
+  const c = document.getElementById('leads-list');
+  if (!filtered.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No leads found.</p></div>`;
+    return;
+  }
+  const stages = ['new', 'contacted', 'qualified', 'won', 'lost'];
+  c.innerHTML = filtered.map(r => `
+    <div class="inquiry-card">
+      <div class="inquiry-top">
+        <div>
+          <div class="inquiry-name">${r.name || 'Unnamed'}</div>
+          <div class="inquiry-type">${r.source}</div>
+          <span class="status-pill">${r.lead_stage}</span>
+        </div>
+        <div class="inquiry-date-badge">${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</div>
+      </div>
+      <div class="inquiry-contact">
+        📞 ${r.phone || '—'} &nbsp;·&nbsp; ✉️ ${r.email || '—'}
+        ${r.notes ? `<br>💬 ${r.notes}` : ''}
+      </div>
+      <div class="inquiry-actions">
+        <select onchange="updateLeadStage('${r.table}','${r.id}',this.value)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:8px 10px;color:#f0ebe6">
+          ${stages.map(s => `<option value="${s}" ${s === r.lead_stage ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+        <a href="tel:${r.phone}" class="btn btn-dark btn-sm">📞 Call</a>
+        ${r.email ? `<a href="mailto:${r.email}" class="btn btn-dark btn-sm">✉️ Email</a>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function updateLeadStage(table, id, stage) {
+  const { error } = await db.from(table).update({ lead_stage: stage }).eq('id', id);
+  if (error) { toast('Failed to update: ' + error.message, 'error'); return; }
+  toast('Lead updated', 'success');
+  await loadLeads();
+}
+
+async function addManualLead() {
+  const name   = document.getElementById('ml-name').value.trim();
+  const phone  = document.getElementById('ml-phone').value.trim();
+  const email  = document.getElementById('ml-email').value.trim();
+  const source = document.getElementById('ml-source').value.trim() || 'Manual';
+  const notes  = document.getElementById('ml-notes').value.trim();
+  if (!name) { toast('Name is required', 'error'); return; }
+  const { error } = await db.from('manual_leads').insert({ name, phone, email, source, notes });
+  if (error) { toast('Failed to add lead: ' + error.message, 'error'); return; }
+  ['ml-name', 'ml-phone', 'ml-email', 'ml-source', 'ml-notes'].forEach(id => document.getElementById(id).value = '');
+  toast('Lead added', 'success');
+  await loadLeads();
+}
+
+function exportLeadsCSV() {
+  const rows = leadsFilter === 'all' ? leadsData : leadsData.filter(r => r.lead_stage === leadsFilter);
+  if (!rows.length) { toast('No leads to export', 'error'); return; }
+  const headers = ['Name', 'Phone', 'Email', 'Source', 'Stage', 'Notes', 'Created'];
+  const csvRows = [headers.join(',')];
+  rows.forEach(r => {
+    const line = [r.name, r.phone, r.email, r.source, r.lead_stage, r.notes, r.created_at]
+      .map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
+    csvRows.push(line);
+  });
+  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV downloaded', 'success');
 }
 
 // ══ MENU EDITOR (Supabase-backed — same DB the live site reads) ══
