@@ -161,20 +161,24 @@
 </head>
 <body>
 
-<!-- ── PASSWORD GATE ── -->
+<!-- ── LOGIN GATE ── -->
 <div id="gate">
   <div class="gate-card">
     <div class="gate-icon">🍗</div>
     <div class="gate-title">Owner Portal</div>
     <p class="gate-sub">Annie Lee's Southern Kitchen</p>
     <div class="gate-field">
+      <label>Email</label>
+      <input type="email" id="gate-email" placeholder="you@example.com" autocomplete="username" />
+    </div>
+    <div class="gate-field">
       <label>Password</label>
       <input type="password" id="gate-pw" placeholder="Enter password" autocomplete="current-password" />
     </div>
-    <button class="gate-btn" onclick="checkPassword()">Unlock →</button>
-    <div class="gate-error" id="gate-error">Incorrect password. Try again.</div>
+    <button class="gate-btn" id="gate-btn" onclick="checkPassword()">Sign In →</button>
+    <div class="gate-error" id="gate-error">Incorrect email or password.</div>
     <div style="margin-top:16px">
-      <a href="#" onclick="resetPasswordPrompt();return false;" style="font-size:.78rem;color:#a89890;text-decoration:underline">Forgot password? Reset to default</a>
+      <a href="#" onclick="resetPasswordPrompt();return false;" style="font-size:.78rem;color:#a89890;text-decoration:underline">Forgot password?</a>
     </div>
   </div>
 </div>
@@ -420,19 +424,22 @@
       <div class="page-title">Settings</div>
       <div class="page-desc">Manage your portal access and preferences.</div>
       <div class="card">
-        <div class="card-title">🔒 Change Password</div>
+        <div class="card-title">🔒 Account & Password</div>
         <div style="max-width:400px">
           <div style="margin-bottom:14px;padding:10px 14px;background:#0f0f0f;border-radius:8px;font-size:.82rem;color:var(--muted)">
-            Current password: <strong id="current-pw-display" style="color:#f0ebe6">•••••</strong>
-            <button class="btn btn-dark btn-sm" style="margin-left:8px" onclick="revealCurrentPw()">Show</button>
+            Signed in as <strong id="current-user-email" style="color:#f0ebe6">—</strong>
           </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">New Password</label>
-            <input type="password" id="new-pw" placeholder="Enter new password" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:#f0ebe6;font-size:.95rem;outline:none" />
+            <input type="password" id="new-pw" placeholder="Enter new password (min 6 characters)" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:#f0ebe6;font-size:.95rem;outline:none" />
           </div>
           <button class="btn btn-red" onclick="changePassword()">Update Password</button>
-          <div style="font-size:.75rem;color:var(--muted2);margin-top:10px">⚠️ This only changes the password on THIS device/browser. Other devices keep using the old one.</div>
+          <div style="font-size:.75rem;color:var(--muted2);margin-top:10px">This is a real account now — changing it here updates it everywhere, on every device.</div>
         </div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 Portal Access</div>
+        <p style="color:var(--muted);font-size:.85rem">To give someone else access, add them as a user in your Supabase dashboard under Authentication → Users. To remove access, delete their user there — takes effect immediately.</p>
       </div>
       <div class="card">
         <div class="card-title">🔗 Connected Services</div>
@@ -510,7 +517,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ══ CONFIG ══
-const PASSWORD      = 'AnnieLee2024';
 const SUPABASE_URL  = 'https://dcxqorxmezakztyfyfbq.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY';
 const RESEND_KEY    = 're_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq';
@@ -526,45 +532,90 @@ let cateringFilter = 'all';
 // NOTE: Menu items and Location/Hours both live in Supabase now (see loadMenuItems and
 // renderLocationEditor below) — edits show on every device instantly, no GitHub push needed.
 
-// ══ PASSWORD GATE ══
+// ══ REAL LOGIN (Supabase Auth) ══
+// Passwords are no longer stored in this file — Supabase verifies them
+// server-side. Create/manage your login in Supabase → Authentication → Users.
 document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+document.getElementById('gate-email').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 
-function checkPassword() {
-  const pw     = document.getElementById('gate-pw').value;
-  const stored = localStorage.getItem('admin_password') || PASSWORD;
-  if (pw === stored) {
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    initApp();
-  } else {
+const LOCKOUT_KEY  = 'admin_lockout_until';
+const ATTEMPTS_KEY = 'admin_failed_attempts';
+
+function isLockedOut() {
+  const until = Number(sessionStorage.getItem(LOCKOUT_KEY) || 0);
+  return Date.now() < until;
+}
+
+async function checkPassword() {
+  if (isLockedOut()) {
+    const secs = Math.ceil((Number(sessionStorage.getItem(LOCKOUT_KEY)) - Date.now()) / 1000);
+    document.getElementById('gate-error').textContent = `Too many attempts. Try again in ${secs}s.`;
+    document.getElementById('gate-error').style.display = 'block';
+    return;
+  }
+  const email = document.getElementById('gate-email').value.trim();
+  const pw    = document.getElementById('gate-pw').value;
+  const btn   = document.getElementById('gate-btn');
+  btn.textContent = 'Signing in…';
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
+
+  btn.textContent = 'Sign In →';
+
+  if (error || !data.session) {
+    const attempts = Number(sessionStorage.getItem(ATTEMPTS_KEY) || 0) + 1;
+    sessionStorage.setItem(ATTEMPTS_KEY, attempts);
+    if (attempts >= 5) {
+      sessionStorage.setItem(LOCKOUT_KEY, Date.now() + 60000);
+      sessionStorage.setItem(ATTEMPTS_KEY, 0);
+      document.getElementById('gate-error').textContent = 'Too many failed attempts. Locked for 60s.';
+    } else {
+      document.getElementById('gate-error').textContent = 'Incorrect email or password.';
+    }
     document.getElementById('gate-error').style.display = 'block';
     document.getElementById('gate-pw').value = '';
+    return;
   }
+
+  sessionStorage.setItem(ATTEMPTS_KEY, 0);
+  document.getElementById('gate').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  initApp();
 }
 
-function resetPasswordPrompt() {
-  if (confirm('This will reset your portal password back to the default (AnnieLee2024). Continue?')) {
-    localStorage.removeItem('admin_password');
-    toast('Password reset to default', 'success');
-    document.getElementById('gate-error').style.display = 'none';
-  }
-}
-
-function logout() {
+async function logout() {
+  await db.auth.signOut();
   document.getElementById('gate').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   document.getElementById('gate-pw').value = '';
   document.getElementById('gate-error').style.display = 'none';
 }
 
-function revealCurrentPw() {
-  document.getElementById('current-pw-display').textContent = localStorage.getItem('admin_password') || PASSWORD;
+function resetPasswordPrompt() {
+  const email = document.getElementById('gate-email').value.trim();
+  if (!email) { alert('Enter your email above first, then click "Forgot password?" again.'); return; }
+  db.auth.resetPasswordForEmail(email).then(({ error }) => {
+    if (error) { alert('Could not send reset email: ' + error.message); }
+    else { alert('Password reset email sent — check your inbox.'); }
+  });
 }
 
-function changePassword() {
+// Picks back up an existing session automatically (also fixes the
+// "back button logs me out" issue as a side effect).
+(async function checkExistingSession() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    initApp();
+  }
+})();
+
+async function changePassword() {
   const np = document.getElementById('new-pw').value;
-  if (!np || np.length < 4) { toast('Password must be at least 4 characters', 'error'); return; }
-  localStorage.setItem('admin_password', np);
+  if (!np || np.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  const { error } = await db.auth.updateUser({ password: np });
+  if (error) { toast('Failed: ' + error.message, 'error'); return; }
   document.getElementById('new-pw').value = '';
   toast('Password updated', 'success');
 }
@@ -624,6 +675,8 @@ function toast(msg, type = 'info', duration = 3500) {
 
 // ══ INIT ══
 async function initApp() {
+  const { data: { user } } = await db.auth.getUser();
+  if (user) document.getElementById('current-user-email').textContent = user.email;
   await Promise.all([loadDashboardStats(), loadTruckBookings(), loadCateringRequests(), loadRecentActivity()]);
 }
 
