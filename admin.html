@@ -283,7 +283,7 @@
           <div class="stat-label">Confirmed Bookings</div>
           <span class="stat-sub sub-green">Confirmed</span>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="switchTab('leads')">
           <div class="stat-num" id="stat-total">—</div>
           <div class="stat-label">Total All Time</div>
           <span class="stat-sub sub-green">All inquiries</span>
@@ -359,7 +359,7 @@
         <button class="filter-btn" onclick="filterLeads('qualified',this)">⭐ Qualified</button>
         <button class="filter-btn" onclick="filterLeads('won',this)">✅ Won</button>
         <button class="filter-btn" onclick="filterLeads('lost',this)">❌ Lost</button>
-        <button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="exportLeadsCSV()">⬇ Export CSV</button>
+        <button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="exportLeadsCSV()">⬇ Export All to CSV</button>
       </div>
       <div id="leads-list"><div class="loading-row">Loading leads...</div></div>
     </div>
@@ -968,6 +968,7 @@ async function deleteCatering(id) {
 // ══ LEADS / CRM ══
 let leadsData = [];
 let leadsFilter = 'all';
+let leadsShowCount = 50; // how many are currently rendered on screen
 
 async function loadLeads() {
   const c = document.getElementById('leads-list');
@@ -992,13 +993,20 @@ async function loadLeads() {
   }));
   rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   leadsData = rows;
+  leadsShowCount = 50; // reset back to the first page each time we (re)load
   renderLeads();
 }
 
 function filterLeads(filter, btn) {
   leadsFilter = filter;
+  leadsShowCount = 50;
   document.querySelectorAll('#tab-leads .filter-row .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  renderLeads();
+}
+
+function loadMoreLeads() {
+  leadsShowCount += 50;
   renderLeads();
 }
 
@@ -1009,8 +1017,10 @@ function renderLeads() {
     c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No leads found.</p></div>`;
     return;
   }
+  const visible = filtered.slice(0, leadsShowCount);
   const stages = ['new', 'contacted', 'qualified', 'won', 'lost'];
-  c.innerHTML = filtered.map(r => `
+  let html = `<div style="color:var(--muted);font-size:.82rem;margin-bottom:10px">Showing ${visible.length} of ${filtered.length}</div>`;
+  html += visible.map(r => `
     <div class="inquiry-card">
       <div class="inquiry-top">
         <div>
@@ -1033,6 +1043,10 @@ function renderLeads() {
       </div>
     </div>
   `).join('');
+  if (filtered.length > visible.length) {
+    html += `<button class="btn btn-dark" style="width:100%;margin-top:12px" onclick="loadMoreLeads()">Load 50 More (${filtered.length - visible.length} older remaining)</button>`;
+  }
+  c.innerHTML = html;
 }
 
 async function updateLeadStage(table, id, stage) {
