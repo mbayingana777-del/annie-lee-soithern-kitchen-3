@@ -227,6 +227,9 @@
       <div class="nav-item" onclick="switchTab('leads')" data-tab="leads">
         <span class="nav-icon">🎯</span> Leads
       </div>
+      <div class="nav-item" onclick="switchTab('visitors')" data-tab="visitors">
+        <span class="nav-icon">👁️</span> Visitors
+      </div>
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
@@ -362,6 +365,19 @@
         <button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="exportLeadsCSV()">⬇ Export All to CSV</button>
       </div>
       <div id="leads-list"><div class="loading-row">Loading leads...</div></div>
+    </div>
+
+    <!-- ── VISITORS ── -->
+    <div class="tab-pane" id="tab-visitors">
+      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
+      <div class="page-title">Visitors</div>
+      <div class="page-desc">Activity on your live site — page views and clicks, most recent first.</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+        <div class="stat-card"><div class="stat-num" id="vis-sessions">—</div><div class="stat-label">Unique Visitors (30d)</div></div>
+        <div class="stat-card"><div class="stat-num" id="vis-views">—</div><div class="stat-label">Page Views (30d)</div></div>
+        <div class="stat-card"><div class="stat-num" id="vis-clicks">—</div><div class="stat-label">Button Clicks (30d)</div></div>
+      </div>
+      <div id="visitors-list"><div class="loading-row">Loading activity...</div></div>
     </div>
 
     <!-- ── MENU EDITOR ── -->
@@ -699,6 +715,7 @@ function switchTab(name) {
   if (name === 'edit-menu')     loadMenuItems();
   if (name === 'edit-location') renderLocationEditor();
   if (name === 'leads')         loadLeads();
+  if (name === 'visitors')      loadVisitors();
 }
 
 // ══ TOAST ══
@@ -1089,6 +1106,41 @@ function exportLeadsCSV() {
   a.click();
   URL.revokeObjectURL(url);
   toast('CSV downloaded', 'success');
+}
+
+// ══ VISITORS ══
+async function loadVisitors() {
+  const c = document.getElementById('visitors-list');
+  c.innerHTML = '<div class="loading-row">Loading activity...</div>';
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await db.from('site_events').select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(300);
+  if (error) {
+    c.innerHTML = `<div class="empty-state"><p>Couldn't load visitor data yet. Make sure the site_events table has been created (run the visitor tracking SQL script).</p></div>`;
+    return;
+  }
+  const events = data || [];
+  const sessions = new Set(events.map(e => e.session_id));
+  const views = events.filter(e => e.event_type === 'pageview').length;
+  const clicks = events.filter(e => e.event_type === 'click').length;
+  document.getElementById('vis-sessions').textContent = sessions.size;
+  document.getElementById('vis-views').textContent = views;
+  document.getElementById('vis-clicks').textContent = clicks;
+
+  if (!events.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No visitor activity yet. It'll start showing up once the tracking script is live on your site.</p></div>`;
+    return;
+  }
+  c.innerHTML = events.slice(0, 150).map(e => `
+    <div class="inquiry-card">
+      <div class="inquiry-top">
+        <div>
+          <div class="inquiry-name">${e.event_type === 'pageview' ? '👁️ Page View' : '🖱️ Click'} — ${e.page || '—'}</div>
+          ${e.label ? `<div class="inquiry-type">${e.label}</div>` : ''}
+        </div>
+        <div class="inquiry-date-badge">${e.created_at ? new Date(e.created_at).toLocaleString() : ''}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 // ══ MENU EDITOR (Supabase-backed — same DB the live site reads) ══
