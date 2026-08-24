@@ -36,8 +36,6 @@
     .gate-btn{width:100%;padding:15px;background:var(--red);color:#fff;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;margin-top:8px;transition:background .18s}
     .gate-btn:hover{background:var(--red-dark)}
     .gate-error{display:none;background:rgba(200,50,26,.15);border:1px solid rgba(200,50,26,.3);border-radius:8px;padding:10px 14px;color:#e05040;font-size:.85rem;margin-top:14px}
-    .back-to-dash{display:inline-block;font-size:.82rem;color:var(--muted);margin-bottom:14px;text-decoration:none}
-    .back-to-dash:hover{color:var(--text)}
 
     /* ── APP SHELL ── */
     #app{display:none;height:100vh;display:grid;grid-template-rows:var(--header) 1fr;grid-template-columns:var(--sidebar) 1fr}
@@ -168,17 +166,13 @@
     <div class="gate-title">Owner Portal</div>
     <p class="gate-sub">Annie Lee's Southern Kitchen</p>
     <div class="gate-field">
-      <label>Email</label>
-      <input type="email" id="gate-email" placeholder="you@example.com" autocomplete="username" />
-    </div>
-    <div class="gate-field">
       <label>Password</label>
       <input type="password" id="gate-pw" placeholder="Enter password" autocomplete="current-password" />
     </div>
-    <button class="gate-btn" id="gate-btn" onclick="checkPassword()">Sign In →</button>
-    <div class="gate-error" id="gate-error">Incorrect email or password.</div>
+    <button class="gate-btn" onclick="checkPassword()">Unlock →</button>
+    <div class="gate-error" id="gate-error">Incorrect password. Try again.</div>
     <div style="margin-top:16px">
-      <a href="#" onclick="resetPasswordPrompt();return false;" style="font-size:.78rem;color:#a89890;text-decoration:underline">Forgot password?</a>
+      <a href="#" onclick="resetPasswordPrompt();return false;" style="font-size:.78rem;color:#a89890;text-decoration:underline">Forgot password? Reset to default</a>
     </div>
   </div>
 </div>
@@ -219,16 +213,6 @@
       <div class="nav-item" onclick="switchTab('catering-reqs')" data-tab="catering-reqs">
         <span class="nav-icon">🍽️</span> Catering
         <span class="nav-badge" id="badge-catering">0</span>
-      </div>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">CRM</div>
-      <div class="nav-item" onclick="switchTab('leads')" data-tab="leads">
-        <span class="nav-icon">🎯</span> Leads
-      </div>
-      <div class="nav-item" onclick="switchTab('visitors')" data-tab="visitors">
-        <span class="nav-icon">👁️</span> Visitors
       </div>
     </div>
     <div class="sidebar-divider"></div>
@@ -312,7 +296,6 @@
 
     <!-- ── FOOD TRUCK BOOKINGS ── -->
     <div class="tab-pane" id="tab-truck-bookings">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Food Truck Bookings</div>
       <div class="page-desc">All food truck booking requests. Confirm or decline each one.</div>
       <div class="filter-row">
@@ -326,7 +309,6 @@
 
     <!-- ── CATERING REQUESTS ── -->
     <div class="tab-pane" id="tab-catering-reqs">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Catering Requests</div>
       <div class="page-desc">All catering inquiries submitted via the website.</div>
       <div class="filter-row">
@@ -339,7 +321,6 @@
 
     <!-- ── MENU EDITOR ── -->
     <div class="tab-pane" id="tab-edit-menu">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Menu Editor</div>
       <div class="page-desc">Add, edit, or delete menu items. Changes save to the site instantly.</div>
 
@@ -393,52 +374,8 @@
       </div>
     </div>
 
-    <!-- ── LEADS / CRM ── -->
-    <div class="tab-pane" id="tab-leads">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
-      <div class="page-title">Leads</div>
-      <div class="page-desc">Every catering request, truck booking, and manually-added lead in one place.</div>
-
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-title">➕ Add a Lead Manually</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:600px">
-          <input id="ml-name" placeholder="Name" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
-          <input id="ml-phone" placeholder="Phone" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
-          <input id="ml-email" placeholder="Email (optional)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
-          <input id="ml-source" placeholder="Source (e.g. Phone call, Walk-in)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6" />
-          <textarea id="ml-notes" placeholder="Notes" style="grid-column:1/-1;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:10px 12px;color:#f0ebe6;min-height:60px"></textarea>
-        </div>
-        <button class="btn btn-red" style="margin-top:10px" onclick="addManualLead()">Add Lead</button>
-      </div>
-
-      <div class="filter-row">
-        <button class="filter-btn active" onclick="filterLeads('all',this)">All</button>
-        <button class="filter-btn" onclick="filterLeads('new',this)">🆕 New</button>
-        <button class="filter-btn" onclick="filterLeads('contacted',this)">📞 Contacted</button>
-        <button class="filter-btn" onclick="filterLeads('qualified',this)">⭐ Qualified</button>
-        <button class="filter-btn" onclick="filterLeads('won',this)">✅ Won</button>
-        <button class="filter-btn" onclick="filterLeads('lost',this)">❌ Lost</button>
-        <button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="exportLeadsCSV()">⬇ Export CSV</button>
-      </div>
-      <div id="leads-list"><div class="loading-row">Loading leads...</div></div>
-    </div>
-
-    <!-- ── VISITORS ── -->
-    <div class="tab-pane" id="tab-visitors">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
-      <div class="page-title">Visitors</div>
-      <div class="page-desc">Recent activity on your live site — page views and clicks.</div>
-      <div class="stats-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
-        <div class="stat-card"><div class="stat-num" id="vis-sessions">0</div><div class="stat-label">Unique Visitors (30d)</div></div>
-        <div class="stat-card"><div class="stat-num" id="vis-views">0</div><div class="stat-label">Page Views (30d)</div></div>
-        <div class="stat-card"><div class="stat-num" id="vis-clicks">0</div><div class="stat-label">Button Clicks (30d)</div></div>
-      </div>
-      <div id="visitors-list"><div class="loading-row">Loading activity...</div></div>
-    </div>
-
     <!-- ── LOCATION & HOURS EDITOR ── -->
     <div class="tab-pane" id="tab-edit-location">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Location & Hours</div>
       <div class="page-desc">Update your address, phone, and business hours. Changes publish to the live site.</div>
 
@@ -473,26 +410,22 @@
 
     <!-- ── SETTINGS ── -->
     <div class="tab-pane" id="tab-settings">
-      <a href="#" onclick="switchTab('dashboard');return false;" class="back-to-dash">← Back to Dashboard</a>
       <div class="page-title">Settings</div>
       <div class="page-desc">Manage your portal access and preferences.</div>
       <div class="card">
-        <div class="card-title">🔒 Account & Password</div>
+        <div class="card-title">🔒 Change Password</div>
         <div style="max-width:400px">
           <div style="margin-bottom:14px;padding:10px 14px;background:#0f0f0f;border-radius:8px;font-size:.82rem;color:var(--muted)">
-            Signed in as <strong id="current-user-email" style="color:#f0ebe6">—</strong>
+            Current password: <strong id="current-pw-display" style="color:#f0ebe6">•••••</strong>
+            <button class="btn btn-dark btn-sm" style="margin-left:8px" onclick="revealCurrentPw()">Show</button>
           </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">New Password</label>
-            <input type="password" id="new-pw" placeholder="Enter new password (min 6 characters)" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:#f0ebe6;font-size:.95rem;outline:none" />
+            <input type="password" id="new-pw" placeholder="Enter new password" style="width:100%;background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:#f0ebe6;font-size:.95rem;outline:none" />
           </div>
           <button class="btn btn-red" onclick="changePassword()">Update Password</button>
-          <div style="font-size:.75rem;color:var(--muted2);margin-top:10px">This is a real account now — changing it here updates it everywhere, on every device.</div>
+          <div style="font-size:.75rem;color:var(--muted2);margin-top:10px">⚠️ This only changes the password on THIS device/browser. Other devices keep using the old one.</div>
         </div>
-      </div>
-      <div class="card">
-        <div class="card-title">👥 Portal Access</div>
-        <p style="color:var(--muted);font-size:.85rem;margin-bottom:12px">To give someone else access to this portal, add them as a user in your Supabase dashboard under Authentication → Users. To remove access, delete their user there — takes effect immediately.</p>
       </div>
       <div class="card">
         <div class="card-title">🔗 Connected Services</div>
@@ -570,6 +503,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ══ CONFIG ══
+const PASSWORD      = 'AnnieLee2024';
 const SUPABASE_URL  = 'https://dcxqorxmezakztyfyfbq.supabase.co';
 const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRjeHFvcnhtZXpha3p0eWZ5ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDMyNDksImV4cCI6MjA5ODU3OTI0OX0.9-flj1zOCqx2Azrp7hHlJxtSpmmdV9sjOLQVPLbmLXY';
 const RESEND_KEY    = 're_bYYD3gqi_DhbyvpZXaTDwwZ9qkZC8h4rq';
@@ -585,92 +519,45 @@ let cateringFilter = 'all';
 // NOTE: Menu items and Location/Hours both live in Supabase now (see loadMenuItems and
 // renderLocationEditor below) — edits show on every device instantly, no GitHub push needed.
 
-// ══ REAL LOGIN (Supabase Auth) ══
-// Passwords are no longer stored in this file at all — Supabase verifies them
-// server-side. Sessions persist automatically (survives refresh / back button)
-// and expire on their own after inactivity.
+// ══ PASSWORD GATE ══
 document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
-document.getElementById('gate-email').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
 
-const LOCKOUT_KEY = 'admin_lockout_until';
-const ATTEMPTS_KEY = 'admin_failed_attempts';
-
-function isLockedOut() {
-  const until = Number(sessionStorage.getItem(LOCKOUT_KEY) || 0);
-  return Date.now() < until;
-}
-
-async function checkPassword() {
-  if (isLockedOut()) {
-    const secs = Math.ceil((Number(sessionStorage.getItem(LOCKOUT_KEY)) - Date.now()) / 1000);
-    document.getElementById('gate-error').textContent = `Too many attempts. Try again in ${secs}s.`;
-    document.getElementById('gate-error').style.display = 'block';
-    return;
-  }
-  const email = document.getElementById('gate-email').value.trim();
-  const pw    = document.getElementById('gate-pw').value;
-  const btn   = document.getElementById('gate-btn');
-  btn.textContent = 'Signing in…';
-
-  const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
-
-  btn.textContent = 'Sign In →';
-
-  if (error || !data.session) {
-    const attempts = Number(sessionStorage.getItem(ATTEMPTS_KEY) || 0) + 1;
-    sessionStorage.setItem(ATTEMPTS_KEY, attempts);
-    if (attempts >= 5) {
-      sessionStorage.setItem(LOCKOUT_KEY, Date.now() + 60000); // 60s lockout
-      sessionStorage.setItem(ATTEMPTS_KEY, 0);
-      document.getElementById('gate-error').textContent = 'Too many failed attempts. Locked for 60s.';
-    } else {
-      document.getElementById('gate-error').textContent = 'Incorrect email or password.';
-    }
+function checkPassword() {
+  const pw     = document.getElementById('gate-pw').value;
+  const stored = localStorage.getItem('admin_password') || PASSWORD;
+  if (pw === stored) {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    initApp();
+  } else {
     document.getElementById('gate-error').style.display = 'block';
     document.getElementById('gate-pw').value = '';
-    return;
   }
-
-  sessionStorage.setItem(ATTEMPTS_KEY, 0);
-  document.getElementById('gate').classList.add('hidden');
-  document.getElementById('app').classList.add('visible');
-  initApp();
 }
 
 function resetPasswordPrompt() {
-  const email = document.getElementById('gate-email').value.trim();
-  if (!email) { alert('Enter your email above first, then click "Forgot password?" again.'); return; }
-  db.auth.resetPasswordForEmail(email).then(({ error }) => {
-    if (error) { toast('Could not send reset email: ' + error.message, 'error'); }
-    else { toast('Password reset email sent — check your inbox.', 'success'); }
-  });
+  if (confirm('This will reset your portal password back to the default (AnnieLee2024). Continue?')) {
+    localStorage.removeItem('admin_password');
+    toast('Password reset to default', 'success');
+    document.getElementById('gate-error').style.display = 'none';
+  }
 }
 
-async function logout() {
-  await db.auth.signOut();
+function logout() {
   document.getElementById('gate').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   document.getElementById('gate-pw').value = '';
   document.getElementById('gate-error').style.display = 'none';
 }
 
-// On page load, check if there's already a valid session (fixes the
-// "back button logs me out" bug — Supabase keeps the session in the
-// browser and this picks it back up instantly instead of showing the gate).
-(async function checkExistingSession() {
-  const { data: { session } } = await db.auth.getSession();
-  if (session) {
-    document.getElementById('gate').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    initApp();
-  }
-})();
+function revealCurrentPw() {
+  document.getElementById('current-pw-display').textContent = localStorage.getItem('admin_password') || PASSWORD;
+}
 
-async function changePassword() {
+function changePassword() {
   const np = document.getElementById('new-pw').value;
-  if (!np || np.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
-  const { error } = await db.auth.updateUser({ password: np });
-  if (error) { toast('Failed: ' + error.message, 'error'); return; }
+  if (!np || np.length < 4) { toast('Password must be at least 4 characters', 'error'); return; }
+  localStorage.setItem('admin_password', np);
   document.getElementById('new-pw').value = '';
   toast('Password updated', 'success');
 }
@@ -716,8 +603,6 @@ function switchTab(name) {
   if (name === 'catering-reqs') loadCateringRequests();
   if (name === 'edit-menu')     loadMenuItems();
   if (name === 'edit-location') renderLocationEditor();
-  if (name === 'leads')         loadLeads();
-  if (name === 'visitors')      loadVisitors();
 }
 
 // ══ TOAST ══
@@ -732,8 +617,6 @@ function toast(msg, type = 'info', duration = 3500) {
 
 // ══ INIT ══
 async function initApp() {
-  const { data: { user } } = await db.auth.getUser();
-  if (user) document.getElementById('current-user-email').textContent = user.email;
   await Promise.all([loadDashboardStats(), loadTruckBookings(), loadCateringRequests(), loadRecentActivity()]);
 }
 
@@ -982,152 +865,6 @@ async function deleteCatering(id) {
   toast('Request deleted', 'info');
   await loadCateringRequests();
   await loadDashboardStats();
-}
-
-// ══ LEADS / CRM ══
-let leadsData = [];
-let leadsFilter = 'all';
-
-async function loadLeads() {
-  const c = document.getElementById('leads-list');
-  c.innerHTML = '<div class="loading-row">Loading leads...</div>';
-  const [truck, catering, manual] = await Promise.all([
-    db.from('food_truck_bookings').select('*').order('created_at', { ascending: false }),
-    db.from('catering_requests').select('*').order('created_at', { ascending: false }),
-    db.from('manual_leads').select('*').order('created_at', { ascending: false })
-  ]);
-  const rows = [];
-  (truck.data || []).forEach(r => rows.push({
-    id: r.id, table: 'food_truck_bookings', name: r.name, phone: r.phone, email: r.email,
-    source: 'Food Truck Booking', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
-  }));
-  (catering.data || []).forEach(r => rows.push({
-    id: r.id, table: 'catering_requests', name: r.name, phone: r.phone, email: r.email,
-    source: 'Catering Request', notes: r.details || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
-  }));
-  (manual.data || []).forEach(r => rows.push({
-    id: r.id, table: 'manual_leads', name: r.name, phone: r.phone, email: r.email,
-    source: r.source || 'Manual', notes: r.notes || '', lead_stage: r.lead_stage || 'new', created_at: r.created_at
-  }));
-  rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  leadsData = rows;
-  renderLeads();
-}
-
-function filterLeads(filter, btn) {
-  leadsFilter = filter;
-  document.querySelectorAll('#tab-leads .filter-row .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderLeads();
-}
-
-function renderLeads() {
-  const filtered = leadsFilter === 'all' ? leadsData : leadsData.filter(r => r.lead_stage === leadsFilter);
-  const c = document.getElementById('leads-list');
-  if (!filtered.length) {
-    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No leads found.</p></div>`;
-    return;
-  }
-  const stages = ['new', 'contacted', 'qualified', 'won', 'lost'];
-  c.innerHTML = filtered.map(r => `
-    <div class="inquiry-card">
-      <div class="inquiry-top">
-        <div>
-          <div class="inquiry-name">${r.name || 'Unnamed'}</div>
-          <div class="inquiry-type">${r.source}</div>
-          <span class="status-pill">${r.lead_stage}</span>
-        </div>
-        <div class="inquiry-date-badge">${r.created_at ? new Date(r.created_at).toLocaleDateString() : ''}</div>
-      </div>
-      <div class="inquiry-contact">
-        📞 ${r.phone || '—'} &nbsp;·&nbsp; ✉️ ${r.email || '—'}
-        ${r.notes ? `<br>💬 ${r.notes}` : ''}
-      </div>
-      <div class="inquiry-actions">
-        <select onchange="updateLeadStage('${r.table}','${r.id}',this.value)" style="background:#0f0f0f;border:1.5px solid var(--border2);border-radius:8px;padding:8px 10px;color:#f0ebe6">
-          ${stages.map(s => `<option value="${s}" ${s === r.lead_stage ? 'selected' : ''}>${s}</option>`).join('')}
-        </select>
-        <a href="tel:${r.phone}" class="btn btn-dark btn-sm">📞 Call</a>
-        ${r.email ? `<a href="mailto:${r.email}" class="btn btn-dark btn-sm">✉️ Email</a>` : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-async function updateLeadStage(table, id, stage) {
-  const { error } = await db.from(table).update({ lead_stage: stage }).eq('id', id);
-  if (error) { toast('Failed to update: ' + error.message, 'error'); return; }
-  toast('Lead updated', 'success');
-  await loadLeads();
-}
-
-async function addManualLead() {
-  const name   = document.getElementById('ml-name').value.trim();
-  const phone  = document.getElementById('ml-phone').value.trim();
-  const email  = document.getElementById('ml-email').value.trim();
-  const source = document.getElementById('ml-source').value.trim() || 'Manual';
-  const notes  = document.getElementById('ml-notes').value.trim();
-  if (!name) { toast('Name is required', 'error'); return; }
-  const { error } = await db.from('manual_leads').insert({ name, phone, email, source, notes });
-  if (error) { toast('Failed to add lead: ' + error.message, 'error'); return; }
-  ['ml-name', 'ml-phone', 'ml-email', 'ml-source', 'ml-notes'].forEach(id => document.getElementById(id).value = '');
-  toast('Lead added', 'success');
-  await loadLeads();
-}
-
-function exportLeadsCSV() {
-  const rows = leadsFilter === 'all' ? leadsData : leadsData.filter(r => r.lead_stage === leadsFilter);
-  if (!rows.length) { toast('No leads to export', 'error'); return; }
-  const headers = ['Name', 'Phone', 'Email', 'Source', 'Stage', 'Notes', 'Created'];
-  const csvRows = [headers.join(',')];
-  rows.forEach(r => {
-    const line = [r.name, r.phone, r.email, r.source, r.lead_stage, r.notes, r.created_at]
-      .map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
-    csvRows.push(line);
-  });
-  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `leads-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('CSV downloaded', 'success');
-}
-
-// ══ VISITORS ══
-async function loadVisitors() {
-  const c = document.getElementById('visitors-list');
-  c.innerHTML = '<div class="loading-row">Loading activity...</div>';
-  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const { data, error } = await db.from('site_events').select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(200);
-  if (error) {
-    c.innerHTML = `<div class="empty-state"><p>Couldn't load visitor data. Make sure the site_events table exists (see db_migration.sql).</p></div>`;
-    return;
-  }
-  const events = data || [];
-  const sessions = new Set(events.map(e => e.session_id));
-  const views = events.filter(e => e.event_type === 'pageview').length;
-  const clicks = events.filter(e => e.event_type === 'click').length;
-  document.getElementById('vis-sessions').textContent = sessions.size;
-  document.getElementById('vis-views').textContent = views;
-  document.getElementById('vis-clicks').textContent = clicks;
-
-  if (!events.length) {
-    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No visitor activity yet.</p></div>`;
-    return;
-  }
-  c.innerHTML = events.slice(0, 100).map(e => `
-    <div class="inquiry-card">
-      <div class="inquiry-top">
-        <div>
-          <div class="inquiry-name">${e.event_type === 'pageview' ? '👁️ Page View' : '🖱️ Click'} — ${e.page || '—'}</div>
-          ${e.label ? `<div class="inquiry-type">${e.label}</div>` : ''}
-        </div>
-        <div class="inquiry-date-badge">${e.created_at ? new Date(e.created_at).toLocaleString() : ''}</div>
-      </div>
-    </div>
-  `).join('');
 }
 
 // ══ MENU EDITOR (Supabase-backed — same DB the live site reads) ══
